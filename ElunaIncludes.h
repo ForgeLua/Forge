@@ -76,6 +76,6 @@ typedef Opcodes                 OpcodesList;
 #define eObjectAccessor()       ObjectAccessor::
 
 typedef TemporarySummon TempSummon;
-typedef SpellEntry SpellInfo;
+typedef SpellInfo SpellInfo;
 
 #endif // _ELUNA_INCLUDES_H
