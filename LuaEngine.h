@@ -488,7 +488,7 @@ public:
     void OnRemoveMember(Group* group, ObjectGuid guid, uint8 method);
     void OnChangeLeader(Group* group, ObjectGuid newLeaderGuid, ObjectGuid oldLeaderGuid);
     void OnDisband(Group* group);
-    void OnCreate(Group* group, ObjectGuid leaderGuid, GroupFlags groupType);
+    void OnCreate(Group* group, ObjectGuid leaderGuid, GroupType groupType);
     bool OnMemberAccept(Group* group, Player* player);
 
     /* Map */
