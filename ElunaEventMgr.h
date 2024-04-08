@@ -1,28 +1,19 @@
 /*
-* Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
-* This program is free software licensed under GPL version 3
-* Please see the included DOCS/LICENSE.md for more information
-*/
+ * Copyright (C) 2024 Forge Lua Engine (fork from Eluna Lua Engine)
+ * Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
+ *
+ * This program is free software licensed under GPL version 3
+ * Please see the included DOCS/LICENSE.md for more information
+ */
 
 #ifndef _ELUNA_EVENT_MGR_H
 #define _ELUNA_EVENT_MGR_H
 
 #include "ElunaUtility.h"
 #include "Common.h"
-#ifdef TRINITY
 #include "Random.h"
-#elif defined CMANGOS
-#include "Util/Util.h"
-#else
-#include "Util.h"
-#endif
 #include <map>
-
-#if defined(TRINITY) || AZEROTHCORE
 #include "Define.h"
-#else
-#include "Platform/Define.h"
-#endif
 
 class Eluna;
 class EventMgr;

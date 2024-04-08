@@ -94,35 +94,6 @@ void Eluna::OnMemberWitdrawMoney(Guild* guild, Player* player, uint32& amount, b
     CleanUpStack(4);
 }
 
-#ifdef CATA
-void Eluna::OnMemberWitdrawMoney(Guild* guild, Player* player, uint64& amount, bool isRepair)
-{
-    START_HOOK(GUILD_EVENT_ON_MONEY_WITHDRAW);
-    HookPush(guild);
-    HookPush(player);
-    HookPush(amount);
-    HookPush(isRepair); // isRepair not a part of Mangos, implement?
-    int amountIndex = lua_gettop(L) - 1;
-    int n = SetupStack(GuildEventBindings, key, 4);
-
-    while (n > 0)
-    {
-        int r = CallOneFunction(n--, 4, 1);
-
-        if (lua_isnumber(L, r))
-        {
-            amount = CHECKVAL<uint32>(r);
-            // Update the stack for subsequent calls.
-            ReplaceArgument(amount, amountIndex);
-        }
-
-        lua_pop(L, 1);
-    }
-
-    CleanUpStack(4);
-}
-#endif
-
 void Eluna::OnMemberDepositMoney(Guild* guild, Player* player, uint32& amount)
 {
     START_HOOK(GUILD_EVENT_ON_MONEY_DEPOSIT);
@@ -148,34 +119,6 @@ void Eluna::OnMemberDepositMoney(Guild* guild, Player* player, uint32& amount)
 
     CleanUpStack(3);
 }
-
-#ifdef CATA
-void Eluna::OnMemberDepositMoney(Guild* guild, Player* player, uint64& amount)
-{
-    START_HOOK(GUILD_EVENT_ON_MONEY_DEPOSIT);
-    HookPush(guild);
-    HookPush(player);
-    HookPush(amount);
-    int amountIndex = lua_gettop(L);
-    int n = SetupStack(GuildEventBindings, key, 3);
-
-    while (n > 0)
-    {
-        int r = CallOneFunction(n--, 3, 1);
-
-        if (lua_isnumber(L, r))
-        {
-            amount = CHECKVAL<uint32>(r);
-            // Update the stack for subsequent calls.
-            ReplaceArgument(amount, amountIndex);
-        }
-
-        lua_pop(L, 1);
-    }
-
-    CleanUpStack(3);
-}
-#endif
 
 void Eluna::OnItemMove(Guild* guild, Player* player, Item* pItem, bool isSrcBank, uint8 srcContainer, uint8 srcSlotId,
     bool isDestBank, uint8 destContainer, uint8 destSlotId)

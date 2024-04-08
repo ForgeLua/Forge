@@ -1,44 +1,26 @@
 /*
-* Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
-* This program is free software licensed under GPL version 3
-* Please see the included DOCS/LICENSE.md for more information
-*/
+ * Copyright (C) 2024 Forge Lua Engine (fork from Eluna Lua Engine)
+ * Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
+ *
+ * This program is free software licensed under GPL version 3
+ * Please see the included DOCS/LICENSE.md for more information
+ */
 
 #include "ElunaUtility.h"
-#ifndef CMANGOS
 #include "World.h"
 #include "Object.h"
 #include "Unit.h"
 #include "GameObject.h"
 #include "DBCStores.h"
-#else
-#include "World/World.h"
-#include "Entities/Object.h"
-#include "Entities/Unit.h"
-#include "Entities/GameObject.h"
-#include "Server/DBCStores.h"
-#include "Util/Timer.h"
-#endif
-#if defined MANGOS
-#include "Timer.h"
-#endif
 
 uint32 ElunaUtil::GetCurrTime()
 {
-#if !defined CMANGOS && !defined VMANGOS
     return getMSTime();
-#else
-    return WorldTimer::getMSTime();
-#endif
 }
 
 uint32 ElunaUtil::GetTimeDiff(uint32 oldMSTime)
 {
-#if !defined CMANGOS && !defined VMANGOS
     return GetMSTimeDiffToNow(oldMSTime);
-#else
-    return WorldTimer::getMSTimeDiff(oldMSTime, WorldTimer::getMSTime());
-#endif
 }
 
 ElunaUtil::ObjectGUIDCheck::ObjectGUIDCheck(ObjectGuid guid) : _guid(guid)
@@ -67,11 +49,7 @@ ElunaUtil::WorldObjectInRangeCheck::WorldObjectInRangeCheck(bool nearest, WorldO
         if (GameObject const* go = i_obj->ToGameObject())
             i_obj_unit = go->GetOwner();
     if (!i_obj_unit)
-#ifndef VMANGOS
         i_obj_fact = sFactionTemplateStore.LookupEntry(14);
-#else
-        i_obj_fact = sObjectMgr.GetFactionTemplateEntry(14);
-#endif
 }
 WorldObject const& ElunaUtil::WorldObjectInRangeCheck::GetFocusObject() const
 {
@@ -101,19 +79,8 @@ bool ElunaUtil::WorldObjectInRangeCheck::operator()(WorldObject* u)
             {
                 if (i_obj_fact)
                 {
-#if ((defined TRINITY || AZEROTHCORE || CMANGOS || VMANGOS) && !defined CATA)
                     if ((i_obj_fact->IsHostileTo(*target->GetFactionTemplateEntry())) != (i_hostile == 1))
                         return false;
-#elif defined CATA && defined TRINITY
-                    if ((i_obj_fact->IsHostileTo(target->GetFactionTemplateEntry())) != (i_hostile == 1))
-                        return false;
-#elif defined CATA && defined CMANGOS
-                    if ((i_obj_fact->IsHostileTo(*target->GetFactionTemplateEntry())) != (i_hostile == 1))
-                        return false;
-#else
-                    if ((i_obj_fact->IsHostileTo(*target->getFactionTemplateEntry())) != (i_hostile == 1))
-                        return false;
-#endif
                 }
                 else if (i_hostile == 1)
                     return false;

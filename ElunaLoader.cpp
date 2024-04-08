@@ -14,21 +14,14 @@
 #include <fstream>
 #include <sstream>
 
-#ifdef USING_BOOST
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
-#else
-#include <filesystem>
-namespace fs = std::filesystem;
-#endif
 
 #ifdef ELUNA_WINDOWS
 #include <Windows.h>
 #endif
 
-#ifdef TRINITY
 #include "MapManager.h"
-#endif
 
 extern "C" {
 #include <lua.h>

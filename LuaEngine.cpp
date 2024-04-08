@@ -1,8 +1,10 @@
 /*
-* Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
-* This program is free software licensed under GPL version 3
-* Please see the included DOCS/LICENSE.md for more information
-*/
+ * Copyright (C) 2024 Forge Lua Engine (fork from Eluna Lua Engine)
+ * Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
+ *
+ * This program is free software licensed under GPL version 3
+ * Please see the included DOCS/LICENSE.md for more information
+ */
 
 #include "Hooks.h"
 #include "LuaEngine.h"
@@ -294,11 +296,7 @@ void Eluna::RunScripts()
 void Eluna::InvalidateObjects()
 {
     ++callstackid;
-#ifdef TRINITY
     ASSERT(callstackid, "Callstackid overflow");
-#else
-    ASSERT(callstackid && "Callstackid overflow");
-#endif
 }
 
 void Eluna::Report(lua_State* _L)
@@ -970,15 +968,11 @@ int Eluna::Register(uint8 regtype, uint32 entry, ObjectGuid guid, uint32 instanc
 void Eluna::UpdateEluna(uint32 diff)
 {
     if (reload)
-#ifdef TRINITY
         if(!GetQueryProcessor().HasPendingCallbacks())
-#endif
             _ReloadEluna();
 
     eventMgr->globalProcessor->Update(diff);
-#ifdef TRINITY
     GetQueryProcessor().ProcessReadyCallbacks();
-#endif
 }
 
 /*

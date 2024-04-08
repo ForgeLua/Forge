@@ -95,19 +95,10 @@ bool Eluna::OnCommand(Player* player, const char* text)
             if (mapid_reload_cache_only != mapId)
             {
                 if (mapId == mapid_reload_global || mapId == mapid_reload_all)
-#ifdef TRINITY
                     if (sWorld->GetEluna())
                         sWorld->GetEluna()->ReloadEluna();
-#else
-                    if (sWorld.GetEluna())
-                        sWorld.GetEluna()->ReloadEluna();
-#endif
 
-#ifdef TRINITY
                 sMapMgr->DoForAllMaps([&](Map* map)
-#else
-                sMapMgr.DoForAllMaps([&](Map* map)
-#endif
                     {
                         if (mapId == mapid_reload_all || mapId == static_cast<int>(map->GetId()))
                         {
@@ -309,33 +300,6 @@ void Eluna::OnMoneyChanged(Player* pPlayer, int32& amount)
 
     CleanUpStack(2);
 }
-
-#ifdef CATA
-void Eluna::OnMoneyChanged(Player* pPlayer, int64& amount)
-{
-    START_HOOK(PLAYER_EVENT_ON_MONEY_CHANGE);
-    HookPush(pPlayer);
-    HookPush(amount);
-    int amountIndex = lua_gettop(L);
-    int n = SetupStack(PlayerEventBindings, key, 2);
-
-    while (n > 0)
-    {
-        int r = CallOneFunction(n--, 2, 1);
-
-        if (lua_isnumber(L, r))
-        {
-            amount = CHECKVAL<int32>(r);
-            // Update the stack for subsequent calls.
-            ReplaceArgument(amount, amountIndex);
-        }
-
-        lua_pop(L, 1);
-    }
-
-    CleanUpStack(2);
-}
-#endif
 
 void Eluna::OnGiveXP(Player* pPlayer, uint32& amount, Unit* pVictim)
 {

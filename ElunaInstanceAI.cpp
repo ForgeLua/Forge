@@ -8,21 +8,6 @@
 #include "ElunaUtility.h"
 #include "lmarshal.h"
 
-
-#ifndef TRINITY
-void ElunaInstanceAI::Initialize()
-{
-    ASSERT(!instance->GetEluna()->HasInstanceData(instance));
-
-    // Create a new table for instance data.
-    lua_State* L = instance->GetEluna()->L;
-    lua_newtable(L);
-    instance->GetEluna()->CreateInstanceData(instance);
-
-    instance->GetEluna()->OnInitialize(this);
-}
-#endif
-
 void ElunaInstanceAI::Load(const char* data)
 {
     // If we get passed NULL (i.e. `Reload` was called) then use
@@ -79,10 +64,6 @@ void ElunaInstanceAI::Load(const char* data)
                 ELUNA_LOG_ERROR("Error while loading instance data: Expected data to be a table (type 5), got type %d instead", lua_type(L, -1));
                 lua_pop(L, 1);
                 // Stack: (empty)
-
-#ifndef TRINITY
-                Initialize();
-#endif
             }
         }
         else
@@ -91,10 +72,6 @@ void ElunaInstanceAI::Load(const char* data)
             ELUNA_LOG_ERROR("Error while parsing instance data with lua-marshal: %s", lua_tostring(L, -1));
             lua_pop(L, 1);
             // Stack: (empty)
-
-#ifndef TRINITY
-            Initialize();
-#endif
         }
 
         delete[] decodedData;
@@ -102,10 +79,6 @@ void ElunaInstanceAI::Load(const char* data)
     else
     {
         ELUNA_LOG_ERROR("Error while decoding instance data: Data is not valid base-64");
-
-#ifndef TRINITY
-        Initialize();
-#endif
     }
 }
 

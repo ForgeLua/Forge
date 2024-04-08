@@ -1,8 +1,10 @@
 /*
-* Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
-* This program is free software licensed under GPL version 3
-* Please see the included DOCS/LICENSE.md for more information
-*/
+ * Copyright (C) 2024 Forge Lua Engine (fork from Eluna Lua Engine)
+ * Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
+ *
+ * This program is free software licensed under GPL version 3
+ * Please see the included DOCS/LICENSE.md for more information
+ */
 
 #ifndef _ELUNACONFIG_H
 #define _ELUNACONFIG_H

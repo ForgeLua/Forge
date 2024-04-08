@@ -295,8 +295,6 @@ bool Eluna::SpellHitTarget(Creature* me, WorldObject* target, SpellInfo const* s
     return CallAllFunctionsBool(CreatureEventBindings, CreatureUniqueBindings, entry_key, unique_key);
 }
 
-#if defined TRINITY || AZEROTHCORE
-
 bool Eluna::SummonedCreatureDies(Creature* me, Creature* summon, Unit* killer)
 {
     START_HOOK_WITH_RETVAL(CREATURE_EVENT_ON_SUMMONED_CREATURE_DIED, me, false);
@@ -323,5 +321,3 @@ bool Eluna::OwnerAttacked(Creature* me, Unit* target)
     HookPush(target);
     return CallAllFunctionsBool(CreatureEventBindings, CreatureUniqueBindings, entry_key, unique_key);
 }
-
-#endif // TRINITY

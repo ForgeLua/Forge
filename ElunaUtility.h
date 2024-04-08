@@ -1,8 +1,10 @@
 /*
-* Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
-* This program is free software licensed under GPL version 3
-* Please see the included DOCS/LICENSE.md for more information
-*/
+ * Copyright (C) 2024 Forge Lua Engine (fork from Eluna Lua Engine)
+ * Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
+ *
+ * This program is free software licensed under GPL version 3
+ * Please see the included DOCS/LICENSE.md for more information
+ */
 
 #ifndef _ELUNA_UTIL_H
 #define _ELUNA_UTIL_H
@@ -12,48 +14,16 @@
 #include <mutex>
 #include <memory>
 #include "Common.h"
-#ifndef CMANGOS
 #include "SharedDefines.h"
 #include "ObjectGuid.h"
-#else
-#include "Globals/SharedDefines.h"
-#include "Entities/ObjectGuid.h"
-#endif
-#ifdef TRINITY
 #include "QueryResult.h"
 #include "Log.h"
-#ifdef CATA
-#include "Object.h"
-#endif
-#elif VMANGOS
-#include "Database/QueryResult.h"
-#include "Log.h"
-#else
-#include "Database/QueryResult.h"
-#include "Log/Log.h"
-#endif
 
-#if !defined(MANGOS) && !defined(VMANGOS)
 #define USING_BOOST
-#endif
 
-#if defined(TRINITY_PLATFORM) && defined(TRINITY_PLATFORM_WINDOWS)
 #if TRINITY_PLATFORM == TRINITY_PLATFORM_WINDOWS
 #define ELUNA_WINDOWS
-#endif
-#elif defined(AC_PLATFORM) && defined(AC_PLATFORM_WINDOWS)
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-#define ELUNA_WINDOWS
-#endif
-#elif defined(PLATFORM) && defined(PLATFORM_WINDOWS)
-#if PLATFORM == PLATFORM_WINDOWS
-#define ELUNA_WINDOWS
-#endif
-#else
-#error Eluna could not determine platform
-#endif
 
-#if defined(TRINITY) || defined(AZEROTHCORE)
 typedef QueryResult ElunaQuery;
 #define GET_GUID                GetGUID
 #define HIGHGUID_PLAYER         HighGuid::Player
@@ -69,10 +39,7 @@ typedef QueryResult ElunaQuery;
 #define HIGHGUID_MO_TRANSPORT   HighGuid::Mo_Transport
 #define HIGHGUID_INSTANCE       HighGuid::Instance
 #define HIGHGUID_GROUP          HighGuid::Group
-#endif
 
-#ifdef TRINITY
-#ifdef WOTLK
 #include "fmt/printf.h"
 #define ELUNA_LOG_TC_FMT(TC_LOG_MACRO, ...) \
     try { \
@@ -84,38 +51,7 @@ typedef QueryResult ElunaQuery;
 #define ELUNA_LOG_INFO(...)     ELUNA_LOG_TC_FMT(TC_LOG_INFO, __VA_ARGS__);
 #define ELUNA_LOG_ERROR(...)    ELUNA_LOG_TC_FMT(TC_LOG_ERROR, __VA_ARGS__);
 #define ELUNA_LOG_DEBUG(...)    ELUNA_LOG_TC_FMT(TC_LOG_DEBUG, __VA_ARGS__);
-#else
-#define ELUNA_LOG_INFO(...)     TC_LOG_INFO("eluna", __VA_ARGS__);
-#define ELUNA_LOG_ERROR(...)    TC_LOG_ERROR("eluna", __VA_ARGS__);
-#define ELUNA_LOG_DEBUG(...)    TC_LOG_DEBUG("eluna", __VA_ARGS__);
-#endif
-#elif defined(AZEROTHCORE)
-#define ELUNA_LOG_INFO(...)     LOG_INFO("eluna", __VA_ARGS__);
-#define ELUNA_LOG_ERROR(...)    LOG_ERROR("eluna", __VA_ARGS__);
-#define ELUNA_LOG_DEBUG(...)    LOG_DEBUG("eluna", __VA_ARGS__);
-#elif VMANGOS
-typedef std::shared_ptr<QueryNamedResult> ElunaQuery;
-#define ASSERT                  MANGOS_ASSERT
-#define ELUNA_LOG_INFO(...)     sLog.Out(LOG_ELUNA, LOG_LVL_BASIC,__VA_ARGS__);
-#define ELUNA_LOG_ERROR(...)    sLog.Out(LOG_ELUNA, LOG_LVL_ERROR,__VA_ARGS__);
-#define ELUNA_LOG_DEBUG(...)    sLog.Out(LOG_ELUNA, LOG_LVL_DEBUG,__VA_ARGS__);
-#define GET_GUID                GetObjectGuid
-#define GetGameObjectTemplate   GetGameObjectInfo
-#define GetItemTemplate         GetItemPrototype
-#define GetTemplate             GetProto
-#else
-typedef std::shared_ptr<QueryNamedResult> ElunaQuery;
-#define ASSERT                  MANGOS_ASSERT
-#define ELUNA_LOG_INFO(...)     sLog.outString(__VA_ARGS__);
-#define ELUNA_LOG_ERROR(...)    sLog.outErrorEluna(__VA_ARGS__);
-#define ELUNA_LOG_DEBUG(...)    sLog.outDebug(__VA_ARGS__);
-#define GET_GUID                GetObjectGuid
-#define GetGameObjectTemplate   GetGameObjectInfo
-#define GetItemTemplate         GetItemPrototype
-#define GetTemplate             GetProto
-#endif
 
-#if defined(TRINITY) || defined(AZEROTHCORE) || defined(MANGOS) || defined(CMANGOS) || defined(VMANGOS)
 #ifndef MAKE_NEW_GUID
 #define MAKE_NEW_GUID(l, e, h)  ObjectGuid(h, e, l)
 #endif
@@ -127,7 +63,6 @@ typedef std::shared_ptr<QueryNamedResult> ElunaQuery;
 #endif
 #ifndef GUID_HIPART
 #define GUID_HIPART(guid)       ObjectGuid(guid).GetHigh()
-#endif
 #endif
 
 typedef std::vector<uint8> BytecodeBuffer;
