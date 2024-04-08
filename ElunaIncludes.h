@@ -74,8 +74,3 @@ typedef Opcodes                 OpcodesList;
 #define eAuctionMgr             (sAuctionMgr)
 #define eGameEventMgr           (sGameEventMgr)
 #define eObjectAccessor()       ObjectAccessor::
-
-typedef TemporarySummon TempSummon;
-typedef SpellInfo SpellInfo;
-
-#endif // _ELUNA_INCLUDES_H
