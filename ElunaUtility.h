@@ -23,6 +23,7 @@
 
 #if TRINITY_PLATFORM == TRINITY_PLATFORM_WINDOWS
 #define ELUNA_WINDOWS
+#endif
 
 typedef QueryResult ElunaQuery;
 #define GET_GUID                GetGUID
@@ -55,12 +56,15 @@ typedef QueryResult ElunaQuery;
 #ifndef MAKE_NEW_GUID
 #define MAKE_NEW_GUID(l, e, h)  ObjectGuid(h, e, l)
 #endif
+
 #ifndef GUID_ENPART
 #define GUID_ENPART(guid)       ObjectGuid(guid).GetEntry()
 #endif
+
 #ifndef GUID_LOPART
 #define GUID_LOPART(guid)       ObjectGuid(guid).GetCounter()
 #endif
+
 #ifndef GUID_HIPART
 #define GUID_HIPART(guid)       ObjectGuid(guid).GetHigh()
 #endif
