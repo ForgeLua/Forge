@@ -171,6 +171,17 @@ namespace LuaSpell
         spell->finish();
         return 0;
     }
+
+    /**
+     * Returns the target [SpellInfo] of the [Spell].
+     *
+     * @return [SpellInfo] spell_info
+     */
+    int GetSpellInfo(Eluna* E, Spell* spell)
+    {
+        E->Push(spell->GetSpellInfo());
+        return 1;
+    }
     
     ElunaRegister<Spell> SpellMethods[] =
     {
@@ -182,6 +193,7 @@ namespace LuaSpell
         { "GetPowerCost", &LuaSpell::GetPowerCost },
         { "GetTargetDest", &LuaSpell::GetTargetDest },
         { "GetTarget", &LuaSpell::GetTarget },
+        { "GetSpellInfo", &LuaSpell::GetSpellInfo },
 
         // Setters
         { "SetAutoRepeat", &LuaSpell::SetAutoRepeat },

@@ -31,6 +31,7 @@ extern "C"
 #include "ItemMethods.h"
 #include "WorldPacketMethods.h"
 #include "SpellMethods.h"
+#include "SpellInfoMethods.h"
 #include "QuestMethods.h"
 #include "MapMethods.h"
 #include "CorpseMethods.h"
@@ -155,8 +156,14 @@ void RegisterFunctions(Eluna* E)
     ElunaTemplate<Spell>::Register(E, "Spell");
     ElunaTemplate<Spell>::SetMethods(E, LuaSpell::SpellMethods);
 
+    ElunaTemplate<SpellInfo>::Register(E, "SpellInfo");
+    ElunaTemplate<SpellInfo>::SetMethods(E, LuaSpellInfo::SpellInfoMethods);
+
     ElunaTemplate<Quest>::Register(E, "Quest");
     ElunaTemplate<Quest>::SetMethods(E, LuaQuest::QuestMethods);
+
+    ElunaTemplate<Loot>::Register(E, "Loot");
+    ElunaTemplate<Loot>::SetMethods(E, LuaLoot::LootMethods);
 
     ElunaTemplate<Map>::Register(E, "Map");
     ElunaTemplate<Map>::SetMethods(E, LuaMap::MapMethods);
