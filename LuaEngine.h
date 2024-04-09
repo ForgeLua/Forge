@@ -101,6 +101,9 @@ public:
     void ReloadEluna() { reload = true; }
     bool ExecuteCall(int params, int res);
 
+    template <typename T>
+    void SetField(int tbl, const char* key, T value);
+
 private:
 
     // Indicates that the lua state should be reloaded
@@ -138,9 +141,6 @@ private:
     void DestroyBindStores();
     void CreateBindStores();
     void InvalidateObjects();
-
-    template <typename T>
-    void SetField(int tbl, const char* key, T value);
 
     // Use ReloadEluna() to make eluna reload
     // This is called on world update to reload eluna
