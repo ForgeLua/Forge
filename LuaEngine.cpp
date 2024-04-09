@@ -306,6 +306,13 @@ void Eluna::InvalidateObjects()
     ASSERT(callstackid, "Callstackid overflow");
 }
 
+template <typename T>
+void Eluna::SetField(int tbl, const char* key, T value)
+{
+    Push(L, value);
+    lua_setfield(L, tbl, key);
+}
+
 void Eluna::Report(lua_State* _L)
 {
     const char* msg = lua_tostring(_L, -1);

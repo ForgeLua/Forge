@@ -139,6 +139,9 @@ private:
     void CreateBindStores();
     void InvalidateObjects();
 
+    template <typename T>
+    void SetField(int tbl, const char* key, T value);
+
     // Use ReloadEluna() to make eluna reload
     // This is called on world update to reload eluna
     void _ReloadEluna();
