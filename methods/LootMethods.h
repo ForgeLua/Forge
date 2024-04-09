@@ -276,8 +276,8 @@ namespace LuaLoot
             lua_newtable(E->L);
             int itemTbl = lua_gettop(E->L);
 
-            E->SetField(itemTbl, "itemid", item->itemid);
-            E->SetField(itemTbl, "itemIndex", item->itemIndex);
+            E->SetField(itemTbl, "id", item->itemid);
+            E->SetField(itemTbl, "index", item->itemIndex);
             E->SetField(itemTbl, "randomSuffix", item->randomSuffix);
             E->SetField(itemTbl, "count", item->count);
             E->SetField(itemTbl, "is_looted", item->is_looted);
@@ -293,6 +293,19 @@ namespace LuaLoot
 
         lua_settop(E->L, tbl);
         return 1;
+    }
+
+    int Clear(Eluna* E, Loot* loot)
+    {
+        loot->clear();
+        return 0;
+    }
+
+    int SetUnlootedCount(Eluna* E, Loot* loot)
+    {
+        uint8 unlootedCount = E->CHECKVAL<uint8>(2);
+        loot->unlootedCount = unlootedCount;
+        return 0;
     }
 
     ElunaRegister<Loot> LootMethods[] =
@@ -313,6 +326,8 @@ namespace LuaLoot
         { "NotifyMoneyRemoved", &LuaLoot::NotifyMoneyRemoved },
         { "AddLooter", &LuaLoot::AddLooter },
         { "RemoveLooter", &LuaLoot::RemoveLooter },
+        { "Clear", &LuaLoot::Clear },
+        { "SetUnlootedCount", &LuaLoot::SetUnlootedCount },
         
         // Boolean
         { "IsLooted", &LuaLoot::IsLooted },

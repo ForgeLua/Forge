@@ -101,8 +101,20 @@ public:
     void ReloadEluna() { reload = true; }
     bool ExecuteCall(int params, int res);
 
-    template <typename T>
-    void SetField(int tbl, const char* key, T value);
+    void SetField(int tbl, const char* key, const long long value)            { Push(value); lua_setfield(L, tbl, key); }
+    void SetField(int tbl, const char* key, const unsigned long long value)   { Push(value); lua_setfield(L, tbl, key); }
+    void SetField(int tbl, const char* key, const long value)                 { Push(value); lua_setfield(L, tbl, key); }
+    void SetField(int tbl, const char* key, const unsigned long value)        { Push(value); lua_setfield(L, tbl, key); }
+    void SetField(int tbl, const char* key, const int value)                  { Push(value); lua_setfield(L, tbl, key); }
+    void SetField(int tbl, const char* key, const unsigned int value)         { Push(value); lua_setfield(L, tbl, key); }
+    void SetField(int tbl, const char* key, const bool value)                 { Push(value); lua_setfield(L, tbl, key); }
+    void SetField(int tbl, const char* key, const float value)                { Push(value); lua_setfield(L, tbl, key); }
+    void SetField(int tbl, const char* key, const double value)               { Push(value); lua_setfield(L, tbl, key); }
+    void SetField(int tbl, const char* key, const std::string& value)         { Push(value); lua_setfield(L, tbl, key); }
+    void SetField(int tbl, const char* key, const char* value)                { Push(value); lua_setfield(L, tbl, key); }
+    void SetField(int tbl, const char* key, ObjectGuid const value)           { Push(value); lua_setfield(L, tbl, key); }
+    template<typename T>
+    void SetField(int tbl, const char* key, T const* ptr)                     { Push(ptr); lua_setfield(L, tbl, key); }
 
 private:
 
