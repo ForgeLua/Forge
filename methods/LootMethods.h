@@ -238,7 +238,7 @@ namespace LuaLoot
      * Checks if the loot has items for a specific player.
      *
      * @param Player* player : the player for whom the item presence is to be checked
-     * @return hasItemFor : return if [Loot] have item for [Player]
+     * @return bool hasItemFor : return if [Loot] have item for [Player]
      */
     int HasItemFor(Eluna* E, Loot* loot)
     {
@@ -257,11 +257,50 @@ namespace LuaLoot
         return 1;
     }
 
+    /**
+     * Return a table with all [Item] on [Loot] storage
+     * @return table items : return items table
+     */
+     int GetItems(Eluna* E, Loot* loot) 
+    {
+        lua_newtable(E->L);
+        int tbl = lua_gettop(E->L);
+        uint32 i = 0;
+
+        std::vector<LootItem> &items = loot->items;
+
+        for (std::vector<LootItem>::iterator it = items.begin(); it != items.end(); ++it)
+        {
+            LootItem* item = &(*it);
+
+            lua_newtable(E->L);
+            int itemTbl = lua_gettop(E->L);
+
+            E->SetField(itemTbl, "itemid", item->itemid);
+            E->SetField(itemTbl, "itemIndex", item->itemIndex);
+            E->SetField(itemTbl, "randomSuffix", item->randomSuffix);
+            E->SetField(itemTbl, "count", item->count);
+            E->SetField(itemTbl, "is_looted", item->is_looted);
+            E->SetField(itemTbl, "is_blocked", item->is_blocked);
+            E->SetField(itemTbl, "freeforall", item->freeforall);
+            E->SetField(itemTbl, "is_underthreshold", item->is_underthreshold);
+            E->SetField(itemTbl, "is_counted", item->is_counted);
+            E->SetField(itemTbl, "needs_quest", item->needs_quest);
+            E->SetField(itemTbl, "follow_loot_rules", item->follow_loot_rules);
+            
+            lua_rawseti(E->L, tbl, ++i);
+        }
+
+        lua_settop(E->L, tbl);
+        return 1;
+    }
+
     ElunaRegister<Loot> LootMethods[] =
     {
         // Getters
         { "GetMoney", &LuaLoot::GetMoney },
         { "GetMaxSlotInLootFor", &LuaLoot::GetMaxSlotInLootFor },
+        { "GetItems", &LuaLoot::GetItems },
         
         // Setters
         { "AddItem", &LuaLoot::AddItem },
