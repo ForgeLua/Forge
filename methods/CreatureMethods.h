@@ -1412,6 +1412,17 @@ namespace LuaCreature
         return 1;
     }
 
+    /**
+     * Returns the [Creature]'s rank as defined in the creature template.
+     *
+     * @return uint32 rank
+     */
+    int GetRank(Eluna* E, Creature* creature)
+    {
+        E->Push(creature->GetCreatureTemplate()->rank);
+        return 1;
+    }
+
     ElunaRegister<Creature> CreatureMethods[] =
     {
         // Getters
@@ -1441,6 +1452,7 @@ namespace LuaCreature
         { "GetCreatureFamily", &LuaCreature::GetCreatureFamily },
         { "GetThreat", &LuaCreature::GetThreat },
         { "GetLoot", &LuaCreature::GetLoot },
+        { "GetRank", &LuaCreature::GetRank },
 
         // Setters
         { "SetRegeneratingHealth", &LuaCreature::SetRegeneratingHealth },
