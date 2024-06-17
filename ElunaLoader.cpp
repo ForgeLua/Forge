@@ -39,8 +39,24 @@ ElunaLoader* ElunaLoader::instance()
     return &instance;
 }
 
+void ElunaUpdateListener::handleFileAction(efsw::WatchID /*watchid*/, std::string const& dir, std::string const& filename, efsw::Action /*action*/, std::string /*oldFilename*/)
+{
+    auto const path = fs::absolute(filename, dir);
+    if (!path.has_extension())
+        return;
+
+    std::string ext = path.extension().string();
+    std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return std::tolower(c); });
+
+    if (ext != ".lua" && ext != ".ext" && ext != ".moon")
+        return;
+
+    sElunaLoader->ReloadElunaForMap(RELOAD_ALL_STATES);
+}
+
 ElunaLoader::~ElunaLoader()
 {
+    lua_scriptWatcher = -1;
 }
 
 void ElunaLoader::LoadScripts()
@@ -245,7 +261,7 @@ void ElunaLoader::ProcessScript(lua_State* L, std::string filename, const std::s
     script.modulepath = fullpath.substr(0, fullpath.length() - filename.length() - ext.length());
     script.mapId = mapId;
 
-    // if compilation fails, we don't add the script 
+    // if compilation fails, we don't add the script
     if (!CompileScript(L, script))
         return;
 
@@ -254,6 +270,23 @@ void ElunaLoader::ProcessScript(lua_State* L, std::string filename, const std::s
     else
         lua_scripts.push_back(script);
     ELUNA_LOG_DEBUG("[Eluna]: ProcessScript processed `%s` successfully", fullpath.c_str());
+}
+
+void ElunaLoader::InitializeFileWatcher()
+{
+    lua_scriptWatcher = lua_fileWatcher.addWatch(lua_folderpath, &elunaUpdateListener, true);
+    if (lua_scriptWatcher >= 0)
+    {
+        ELUNA_LOG_INFO("[Eluna]: Script reloader is listening on `%s`.",
+        lua_folderpath.c_str());
+    }
+    else
+    {
+        ELUNA_LOG_INFO("[Eluna]: Failed to initialize the script reloader on `%s`.",
+        lua_folderpath.c_str());
+    }
+
+    lua_fileWatcher.watch();
 }
 
 static bool ScriptPathComparator(const LuaScript& first, const LuaScript& second)
@@ -275,4 +308,25 @@ bool ElunaLoader::ShouldMapLoadEluna(uint32 id)
         return true;
 
     return (std::find(requiredMaps.begin(), requiredMaps.end(), id) != requiredMaps.end());
+}
+
+void ElunaLoader::ReloadElunaForMap(int mapId)
+{
+    // If a mapid is provided but does not match any map or reserved id then only script storage is loaded
+    LoadScripts();
+
+    if (mapId != RELOAD_CACHE_ONLY)
+    {
+        if (mapId == RELOAD_GLOBAL_STATE || mapId == RELOAD_ALL_STATES)
+            if (sWorld->GetEluna())
+                sWorld->GetEluna()->ReloadEluna();
+
+        sMapMgr->DoForAllMaps([&](Map* map)
+            {
+                if (mapId == RELOAD_ALL_STATES || mapId == static_cast<int>(map->GetId()))
+                    if (map->GetEluna())
+                        map->GetEluna()->ReloadEluna();
+            }
+        );
+    }
 }
