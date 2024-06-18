@@ -1218,6 +1218,74 @@ namespace LuaUnit
     }
 
     /**
+    * Returns the [Unit]'s speed rate of given [UnitMoveType].
+    *
+    * <pre>
+    * enum UnitMoveType
+    * {
+    *     MOVE_WALK           = 0,
+    *     MOVE_RUN            = 1,
+    *     MOVE_RUN_BACK       = 2,
+    *     MOVE_SWIM           = 3,
+    *     MOVE_SWIM_BACK      = 4,
+    *     MOVE_TURN_RATE      = 5,
+    *     MOVE_FLIGHT         = 6,
+    *     MOVE_FLIGHT_BACK    = 7,
+    *     MOVE_PITCH_RATE     = 8
+    * };
+    * </pre>
+    *
+    * @param [UnitMoveType] type
+    * @return float speed
+    */
+    int GetSpeedRate(Eluna* E, Unit* unit)
+    {
+        uint32 type = E->CHECKVAL<uint32>(2);
+        if (type >= MAX_MOVE_TYPE)
+        {
+            return luaL_argerror(E->L, 2, "valid UnitMoveType expected");
+        }
+
+        E->Push(unit->GetSpeedRate((UnitMoveType)type));
+
+        return 1;
+    }
+
+    /**
+    * Sets the [Unit]'s speed rate of given [UnitMoveType] to given rate.
+    * If forced, packets sent to clients forcing the visual change.
+    *
+    * <pre>
+    * enum UnitMoveType
+    * {
+    *     MOVE_WALK           = 0,
+    *     MOVE_RUN            = 1,
+    *     MOVE_RUN_BACK       = 2,
+    *     MOVE_SWIM           = 3,
+    *     MOVE_SWIM_BACK      = 4,
+    *     MOVE_TURN_RATE      = 5,
+    *     MOVE_FLIGHT         = 6,
+    *     MOVE_FLIGHT_BACK    = 7,
+    *     MOVE_PITCH_RATE     = 8
+    * };
+    * </pre>
+    *
+    * @param [UnitMoveType] type
+    * @param float rate
+    * @param bool forced = false
+    */
+    int SetSpeedRate(Eluna* E, Unit* unit)
+    {
+        uint32 type = E->CHECKVAL<uint32>(2);
+        float rate = E->CHECKVAL<float>(3);
+        if (type >= MAX_MOVE_TYPE)
+            return luaL_argerror(E->L, 2, "valid UnitMoveType expected");
+
+        unit->SetSpeedRate((UnitMoveType)type, rate);
+        return 0;
+    }
+
+    /**
      * Returns the current movement type for this [Unit].
      *
      * <pre>

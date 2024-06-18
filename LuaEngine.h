@@ -138,7 +138,7 @@ private:
 
     // Whether or not Eluna is in compatibility mode. Used in some method wrappers.
     bool compatibilityMode;
-    
+
     // Index of the Eluna::StackTrace function pushed to the lua state stack when lua is opened
     // We store the function to stack on lua open because it cannot be a pseudo-index (must be on stack) and we want access it on every call
     int stacktraceFunctionStackIndex = 0;
@@ -552,6 +552,9 @@ public:
 
     /* Spell */
     void OnSpellCast(Spell* pSpell, bool skipCheck);
+    void OnSpellCancel(Spell* pSpell);
+    void OnSpellUpdate(Spell* pSpell, uint32 difftime);
+    void OnSpellFinish(Spell* pSpell, bool ok);
 };
 template<> Unit* Eluna::CHECKOBJ<Unit>(int narg, bool error);
 template<> Object* Eluna::CHECKOBJ<Object>(int narg, bool error);

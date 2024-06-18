@@ -146,7 +146,7 @@ namespace Hooks
 
         // AddOns
         ADDON_EVENT_ON_MESSAGE                  =     30,       // (event, sender, type, prefix, msg, target) - target can be nil/whisper_target/guild/group/channel. Can return false
-        
+
         WORLD_EVENT_ON_DELETE_CREATURE          =     31,       // (event, creature)
         WORLD_EVENT_ON_DELETE_GAMEOBJECT        =     32,       // (event, gameobject)
 
@@ -329,6 +329,9 @@ namespace Hooks
     enum SpellEvents
     {
         SPELL_EVENT_ON_CAST                             = 1,    // (event, spell, skipCheck)
+        SPELL_EVENT_ON_CANCEL                           = 2,    // (event, spell)
+        SPELL_EVENT_ON_UPDATE                           = 3,    // (event, spell, difftime)
+        SPELL_EVENT_ON_FINISH                           = 4,    // (event, spell, ok)
         SPELL_EVENT_COUNT
     };
 

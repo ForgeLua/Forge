@@ -12,6 +12,7 @@
 // Required
 #include "AccountMgr.h"
 #include "AuctionHouseMgr.h"
+#include "AchievementMgr.h"
 #include "Cell.h"
 #include "CellImpl.h"
 #include "Chat.h"

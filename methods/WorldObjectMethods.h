@@ -731,7 +731,7 @@ namespace LuaWorldObject
      *     worldobject:RegisterEvent(Timed, {1000, 10000}, 0) -- do it after 1 to 10 seconds forever
      *
      * In multistate, this method is only available in the MAP states
-     * 
+     *
      * @proto eventId = (function, delay)
      * @proto eventId = (function, delaytable)
      * @proto eventId = (function, delay, repeats)
@@ -1130,7 +1130,9 @@ namespace LuaWorldObject
     {
         return LuaVal::PushLuaVal(E->L, obj->lua_data);
     }
-    
+
+
+
     ElunaRegister<WorldObject> WorldObjectMethods[] =
     {
         // Getters

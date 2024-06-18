@@ -30,3 +30,26 @@ void Eluna::OnSpellCast(Spell* pSpell, bool skipCheck)
     HookPush(skipCheck);
     CallAllFunctions(SpellEventBindings, key);
 }
+
+void Eluna::OnSpellCancel(Spell* pSpell)
+{
+    START_HOOK(SPELL_EVENT_ON_CANCEL, pSpell);
+    HookPush(pSpell);
+    CallAllFunctions(SpellEventBindings, key);
+}
+
+void Eluna::OnSpellUpdate(Spell* pSpell, uint32 difftime)
+{
+    START_HOOK(SPELL_EVENT_ON_UPDATE, pSpell);
+    HookPush(pSpell);
+    HookPush(difftime);
+    CallAllFunctions(SpellEventBindings, key);
+}
+
+void Eluna::OnSpellFinish(Spell* pSpell, bool ok)
+{
+    START_HOOK(SPELL_EVENT_ON_FINISH, pSpell);
+    HookPush(pSpell);
+    HookPush(ok);
+    CallAllFunctions(SpellEventBindings, key);
+}

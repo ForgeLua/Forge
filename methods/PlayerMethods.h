@@ -3741,6 +3741,153 @@ namespace LuaPlayer
         return 1;
     }
 
+     /**
+     * Run a chat command as if the player typed it into the chat
+     *
+     * @param string command: text to display in chat or console
+     */
+     int RunCommand(Eluna* E, Player* player)
+     {
+         auto command = E->CHECKVAL<std::string>(2);
+
+         // In _ParseCommands which is used below no leading . or ! is allowed for the command string.
+         if (command[0] == '.' || command[0] == '!') {
+             command = command.substr(1);
+         }
+
+         auto handler = ChatHandler(player->GetSession());
+         handler._ParseCommands(command);
+
+         return 0;
+     }
+
+     /**
+     * Adds a glyph specified by `glyphId` to the [Player]'s current talent specialization into the slot with the index `slotIndex`
+     *
+     * @param uint32 glyphId
+     * @param uint32 slotIndex
+     */
+     int SetGlyph(Eluna* E, Player* player)
+     {
+         uint32 glyphId = E->CHECKVAL<uint32>(2);
+         uint32 slotIndex = E->CHECKVAL<uint32>(3);
+
+         player->SetGlyph(slotIndex, glyphId);
+         player->SendTalentsInfoData(false); // Also handles GlyphData
+
+         return 0;
+     }
+
+     /**
+     * Get glyphId of the glyph slot specified by `slotIndex` off the [Player]'s current talent specialization.`
+     * @param uint32 slotIndex
+     * @return glyphId of the glyph in the selected glyph slot or 0 in case the glyph slot is empty
+     */
+     int GetGlyph(Eluna* E, Player* player)
+     {
+         auto slot = E->CHECKVAL<uint32>(2);
+         E->Push(player->GetGlyph(slot));
+         return 1;
+     }
+
+     /**
+      * Returns `true` if the [Player] has a Tank Specialization, `false` otherwise.
+      *
+      * @return bool HasTankSpec
+      */
+     int HasTankSpec(Eluna* E, Player* player)
+     {
+         E->Push(player->HasTankSpec());
+         return 1;
+     }
+
+     /**
+      * Returns `true` if the [Player] has a Melee Specialization, `false` otherwise.
+      *
+      * @return bool HasMeleeSpec
+      */
+     int HasMeleeSpec(Eluna* E, Player* player)
+     {
+         E->Push(player->HasMeleeSpec());
+         return 1;
+     }
+
+     /**
+      * Returns `true` if the [Player] has a Caster Specialization, `false` otherwise.
+      *
+      * @return bool HasCasterSpec
+      */
+     int HasCasterSpec(Eluna* E, Player* player)
+     {
+         E->Push(player->HasCasterSpec());
+         return 1;
+     }
+
+     /**
+      * Returns `true` if the [Player] has a Heal Specialization, `false` otherwise.
+      *
+      * @return bool HasHealSpec
+      */
+     int HasHealSpec(Eluna* E, Player* player)
+     {
+         E->Push(player->HasHealSpec());
+         return 1;
+     }
+
+     /**
+    * Returns the [Player]s current amount of Achievement Points
+    *
+    * @return uint32 achievementPoints
+    */
+    int GetAchievementPoints(Eluna* E, Player* player)
+    {
+        uint32 count = 0;
+        const CompletedAchievementMap& completedAchievements = player->GetAchievementMgr()->GetCompletedAchievements();
+        for (auto& pair : completedAchievements)
+        {
+             AchievementEntry const* achievement = sAchievementStore.LookupEntry(pair.first);
+             if (achievement)
+                 count += achievement->Points;
+        }
+
+        E->Push(count);
+        return 1;
+    }
+
+    /**
+    * Returns the [Player]s current amount of Achievements Completed
+    *
+    * @return uint32 achievementsCount
+    */
+    int GetCompletedAchievementsCount(Eluna* E, Player* player)
+    {
+         uint32 count = 0;
+         bool countFeatsOfStrength = E->CHECKVAL<bool>(2, false);
+         const CompletedAchievementMap& completedAchievements = player->GetAchievementMgr()->GetCompletedAchievements();
+         for (auto& pair : completedAchievements)
+         {
+             AchievementEntry const* achievement = sAchievementStore.LookupEntry(pair.first);
+             if (achievement && (achievement->Category != 81 || countFeatsOfStrength))
+                     count++;
+         }
+
+         E->Push(count);
+         return 1;
+    }
+
+    /**
+    * Returns the [Player]s completed quest count
+    *
+    * @return int32 questcount
+    */
+    int GetCompletedQuestsCount(Eluna* E, Player* player)
+    {
+        uint32 count = player->GetRewardedQuestCount();
+
+        E->Push(count);
+        return 1;
+    }
+
     ElunaRegister<Player> PlayerMethods[] =
     {
         // Getters
@@ -3814,6 +3961,10 @@ namespace LuaPlayer
         { "GetXP", &LuaPlayer::GetXP },
         { "GetXPForNextLevel", &LuaPlayer::GetXPForNextLevel },
         { "GetSpells", &LuaPlayer::GetSpells },
+        { "GetGlyph", &LuaPlayer::GetGlyph },
+        { "GetCompletedQuestsCount", &LuaPlayer::GetGlyph },
+        { "GetCompletedAchievementsCount", &LuaPlayer::GetCompletedAchievementsCount },
+        { "GetAchievementPoints", &LuaPlayer::GetAchievementPoints },
 
         // Setters
         { "AdvanceSkillsToMax", &LuaPlayer::AdvanceSkillsToMax },
@@ -3847,6 +3998,7 @@ namespace LuaPlayer
         { "SetGender", &LuaPlayer::SetGender },
         { "SetSheath", &LuaPlayer::SetSheath },
         { "SetFFA", &LuaPlayer::SetFFA },
+        { "SetGlyph", &LuaPlayer::SetGlyph },
 
         // Boolean
         { "IsInGroup", &LuaPlayer::IsInGroup },
@@ -3911,6 +4063,10 @@ namespace LuaPlayer
         { "IsFlying", &LuaPlayer::IsFlying },
         { "CanCompleteRepeatableQuest", &LuaPlayer::CanCompleteRepeatableQuest },
         { "CanRewardQuest", &LuaPlayer::CanRewardQuest },
+        { "HasTankSpec", &LuaPlayer::HasTankSpec },
+        { "HasMeleeSpec", &LuaPlayer::HasMeleeSpec },
+        { "HasCasterSpec", &LuaPlayer::HasCasterSpec },
+        { "HasHealSpec", &LuaPlayer::HasHealSpec },
 
         // Gossip
         { "GossipMenuAddItem", &LuaPlayer::GossipMenuAddItem },
@@ -4021,6 +4177,8 @@ namespace LuaPlayer
         { "ResetHonor", nullptr, METHOD_REG_NONE }, // classic only
         { "ClearHonorInfo", nullptr, METHOD_REG_NONE }, // classic only
         { "GainSpellComboPoints", nullptr, METHOD_REG_NONE }, // not implemented
+
+        { "RunCommand", &LuaPlayer::RunCommand },
 
         { NULL, NULL, METHOD_REG_NONE }
     };
