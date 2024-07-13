@@ -9,20 +9,9 @@
 
 #include "ElunaUtility.h"
 #include "Common.h"
-#ifdef TRINITY
 #include "Random.h"
-#elif defined CMANGOS
-#include "Util/Util.h"
-#else
-#include "Util.h"
-#endif
 #include <map>
-
-#if defined(TRINITY) || AZEROTHCORE
 #include "Define.h"
-#else
-#include "Platform/Define.h"
-#endif
 
 class Eluna;
 class EventMgr;

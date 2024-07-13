@@ -8,17 +8,8 @@
 #define _ELUNA_INSTANCE_DATA_H
 
 #include "LuaEngine.h"
-#if defined(TRINITY) || AZEROTHCORE
 #include "InstanceScript.h"
-#elif defined CMANGOS
-#include "Maps/InstanceData.h"
-#else
-#include "InstanceData.h"
-#endif
-
-#ifdef TRINITY
 #include "Map.h"
-#endif
 
 /*
  * This class is a small wrapper around `InstanceData`,
@@ -66,38 +57,21 @@ private:
     std::string lastSaveData;
 
 public:
-#ifdef TRINITY
     ElunaInstanceAI(Map* map) : InstanceData(map->ToInstanceMap())
     {
     }
-#else
-    ElunaInstanceAI(Map* map) : InstanceData(map)
-    {
-    }
-#endif
-
-#ifndef TRINITY
-    void Initialize() override;
-#endif
 
     /*
      * These are responsible for serializing/deserializing the instance's
      *   data table to/from the core.
      */
     void Load(const char* data) override;
-#if defined TRINITY || AZEROTHCORE
     // Simply calls Save, since the functions are a bit different in name and data types on different cores
     std::string GetSaveData() override
     {
         return Save();
     }
     const char* Save() const;
-#elif defined VMANGOS
-    const char* Save() const;
-#else
-    const char* Save() const override;
-#endif
-
 
     /*
      * Calls `Load` with the last save data that was passed to
@@ -113,18 +87,10 @@ public:
     /*
      * These methods allow non-Lua scripts (e.g. DB, C++) to get/set instance data.
      */
-#ifndef VMANGOS
     uint32 GetData(uint32 key) const override;
-#else
-    uint32 GetData(uint32 key) const;
-#endif
     void SetData(uint32 key, uint32 value) override;
 
-#ifndef VMANGOS
     uint64 GetData64(uint32 key) const override;
-#else
-    uint64 GetData64(uint32 key) const;
-#endif
     void SetData64(uint32 key, uint64 value) override;
 
     /*
@@ -151,11 +117,7 @@ public:
         instance->GetEluna()->OnPlayerEnterInstance(this, player);
     }
 
-#if defined TRINITY || AZEROTHCORE
     void OnGameObjectCreate(GameObject* gameobject) override
-#else
-    void OnObjectCreate(GameObject* gameobject) override
-#endif
     {
         instance->GetEluna()->OnGameObjectCreate(this, gameobject);
     }

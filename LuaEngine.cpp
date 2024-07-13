@@ -300,11 +300,7 @@ void Eluna::RunScripts()
 void Eluna::InvalidateObjects()
 {
     ++callstackid;
-#ifdef TRINITY
     ASSERT(callstackid, "Callstackid overflow");
-#else
-    ASSERT(callstackid && "Callstackid overflow");
-#endif
 }
 
 void Eluna::Report(lua_State* _L)
@@ -968,15 +964,11 @@ int Eluna::Register(uint8 regtype, uint32 entry, ObjectGuid guid, uint32 instanc
 void Eluna::UpdateEluna(uint32 diff)
 {
     if (reload)
-#ifdef TRINITY
         if(!GetQueryProcessor().HasPendingCallbacks())
-#endif
             _ReloadEluna();
 
     eventMgr->globalProcessor->Update(diff);
-#ifdef TRINITY
     GetQueryProcessor().ProcessReadyCallbacks();
-#endif
 }
 
 /*

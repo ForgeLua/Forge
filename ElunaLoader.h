@@ -9,10 +9,7 @@
 #define _ELUNALOADER_H
 
 #include "ElunaUtility.h"
-
-#ifdef TRINITY
 #include <efsw/efsw.hpp>
-#endif
 
 extern "C"
 {
@@ -62,15 +59,12 @@ public:
     std::vector<LuaScript> combined_scripts;
     std::list<uint32> requiredMaps;
 
-#ifdef TRINITY
     // efsw file watcher
     void InitializeFileWatcher();
     efsw::FileWatcher lua_fileWatcher;
     efsw::WatchID lua_scriptWatcher;
-#endif
 };
 
-#ifdef TRINITY
 /// File watcher responsible for watching lua scripts
 class ElunaUpdateListener : public efsw::FileWatchListener
 {
@@ -83,7 +77,6 @@ public:
 };
 
 static ElunaUpdateListener elunaUpdateListener;
-#endif
 
 #define sElunaLoader ElunaLoader::instance()
 

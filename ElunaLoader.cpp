@@ -14,21 +14,14 @@
 #include <fstream>
 #include <sstream>
 
-#ifdef USING_BOOST
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
-#else
-#include <filesystem>
-namespace fs = std::filesystem;
-#endif
 
 #ifdef ELUNA_WINDOWS
 #include <Windows.h>
 #endif
 
-#ifdef TRINITY
 #include "MapManager.h"
-#endif
 
 extern "C" {
 #include <lua.h>
@@ -36,7 +29,6 @@ extern "C" {
 #include <lauxlib.h>
 }
 
-#ifdef TRINITY
 void ElunaUpdateListener::handleFileAction(efsw::WatchID /*watchid*/, std::string const& dir, std::string const& filename, efsw::Action /*action*/, std::string /*oldFilename*/)
 {
     auto const path = fs::absolute(filename, dir);
@@ -51,13 +43,10 @@ void ElunaUpdateListener::handleFileAction(efsw::WatchID /*watchid*/, std::strin
 
     sElunaLoader->ReloadElunaForMap(RELOAD_ALL_STATES);
 }
-#endif
 
 ElunaLoader::ElunaLoader()
 {
-#ifdef TRINITY
     lua_scriptWatcher = -1;
-#endif
 }
 
 ElunaLoader* ElunaLoader::instance()
@@ -68,13 +57,11 @@ ElunaLoader* ElunaLoader::instance()
 
 ElunaLoader::~ElunaLoader()
 {
-#ifdef TRINITY
     if (lua_scriptWatcher >= 0)
     {
         lua_fileWatcher.removeWatch(lua_scriptWatcher);
         lua_scriptWatcher = -1;
     }
-#endif
 }
 
 void ElunaLoader::LoadScripts()
@@ -290,7 +277,6 @@ void ElunaLoader::ProcessScript(lua_State* L, std::string filename, const std::s
     ELUNA_LOG_DEBUG("[Eluna]: ProcessScript processed `%s` successfully", fullpath.c_str());
 }
 
-#ifdef TRINITY
 void ElunaLoader::InitializeFileWatcher()
 {
     lua_scriptWatcher = lua_fileWatcher.addWatch(lua_folderpath, &elunaUpdateListener, true);
@@ -307,7 +293,6 @@ void ElunaLoader::InitializeFileWatcher()
 
     lua_fileWatcher.watch();
 }
-#endif
 
 static bool ScriptPathComparator(const LuaScript& first, const LuaScript& second)
 {
@@ -338,19 +323,10 @@ void ElunaLoader::ReloadElunaForMap(int mapId)
     if (mapId != RELOAD_CACHE_ONLY)
     {
         if (mapId == RELOAD_GLOBAL_STATE || mapId == RELOAD_ALL_STATES)
-#ifdef TRINITY
             if (sWorld->GetEluna())
                 sWorld->GetEluna()->ReloadEluna();
-#else
-            if (sWorld.GetEluna())
-                sWorld.GetEluna()->ReloadEluna();
-#endif
 
-#ifdef TRINITY
-        sMapMgr->DoForAllMaps([&](Map* map)
-#else
-        sMapMgr.DoForAllMaps([&](Map* map)
-#endif
+            sMapMgr->DoForAllMaps([&](Map* map)
             {
                 if (mapId == RELOAD_ALL_STATES || mapId == static_cast<int>(map->GetId()))
                     if (map->GetEluna())

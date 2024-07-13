@@ -4,11 +4,7 @@
 * Please see the included DOCS/LICENSE.md for more information
 */
 
-#if defined TRINITY || defined MANGOS
 #include "Config.h"
-#elif defined CMANGOS || defined VMANGOS
-#include "Config/Config.h"
-#endif
 #include "ElunaConfig.h"
 
 ElunaConfig::ElunaConfig()
@@ -42,22 +38,12 @@ void ElunaConfig::Initialize()
 
 void ElunaConfig::SetConfig(ElunaConfigBoolValues index, char const* fieldname, bool defvalue)
 {
-#ifdef TRINITY
     SetConfig(index, sConfigMgr->GetBoolDefault(fieldname, defvalue));
-#elif defined CMANGOS || defined VMANGOS || defined MANGOS
-    SetConfig(index, sConfig.GetBoolDefault(fieldname, defvalue));
-#endif
 }
 
 void ElunaConfig::SetConfig(ElunaConfigStringValues index, char const* fieldname, std::string defvalue)
 {
-#ifdef TRINITY
     SetConfig(index, sConfigMgr->GetStringDefault(fieldname, defvalue));
-#elif CMANGOS
-    SetConfig(index, sConfig.GetStringDefault(fieldname, defvalue));
-#elif defined VMANGOS || defined MANGOS
-    SetConfig(index, sConfig.GetStringDefault(fieldname, defvalue.c_str()));
-#endif
 }
 
 bool ElunaConfig::IsElunaEnabled()
