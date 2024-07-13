@@ -322,16 +322,13 @@ void ElunaLoader::ReloadElunaForMap(int mapId)
 
     if (mapId != RELOAD_CACHE_ONLY)
     {
-        if (mapId == RELOAD_GLOBAL_STATE || mapId == RELOAD_ALL_STATES)
-            if (sWorld->GetEluna())
-                sWorld->GetEluna()->ReloadEluna();
+        if (sWorld->GetEluna())
+            sWorld->GetEluna()->ReloadEluna();
 
-            sMapMgr->DoForAllMaps([&](Map* map)
-            {
-                if (mapId == RELOAD_ALL_STATES || mapId == static_cast<int>(map->GetId()))
-                    if (map->GetEluna())
-                        map->GetEluna()->ReloadEluna();
-            }
-        );
+        sMapMgr->DoForAllMaps([&](Map* map) {
+            if (mapId == RELOAD_ALL_STATES || mapId == static_cast<int>(map->GetId()))
+                if (map->GetEluna())
+                    map->GetEluna()->ReloadEluna();
+        });
     }
 }
