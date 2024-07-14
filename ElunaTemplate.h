@@ -159,8 +159,6 @@ public:
 
 private:
     ElunaConstrainedObjectRef<T> _obj;
-    void* _obj;
-    uint64 callstackid;
 };
 
 template <typename T>
