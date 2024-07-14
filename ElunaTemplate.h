@@ -17,6 +17,9 @@ extern "C"
 #include "ElunaUtility.h"
 #include "ElunaCompat.h"
 #include "SharedDefines.h"
+#include "UniqueTrackablePtr.h"
+
+#define TRACKABLE_PTR_NAMESPACE ::Trinity::
 
 class ElunaGlobal
 {
@@ -104,13 +107,9 @@ public:
     }
 
     // Get wrapped object pointer
-    virtual void* GetObj() const = 0;
-    // Returns whether the object is valid or not
-    virtual bool IsValid() const = 0;
+    virtual void* GetObjIfValid() const = 0;
     // Returns pointer to the wrapped object's type name
     const char* GetTypeName() const { return type_name; }
-    // Invalidates the pointer if it should be invalidated
-    virtual void Invalidate() = 0;
 
 protected:
     Eluna* E;
@@ -118,18 +117,48 @@ protected:
 };
 
 template <typename T>
+struct ElunaConstrainedObjectRef
+{
+    TRACKABLE_PTR_NAMESPACE unique_weak_ptr<T> Obj;
+    Map const* BoundMap = nullptr;
+};
+
+ElunaConstrainedObjectRef<Aura> GetWeakPtrFor(Aura const* obj);
+ElunaConstrainedObjectRef<Battleground> GetWeakPtrFor(Battleground const* obj);
+ElunaConstrainedObjectRef<Group> GetWeakPtrFor(Group const* obj);
+ElunaConstrainedObjectRef<Guild> GetWeakPtrFor(Guild const* obj);
+ElunaConstrainedObjectRef<Map> GetWeakPtrFor(Map const* obj);
+ElunaConstrainedObjectRef<Object> GetWeakPtrForObjectImpl(Object const* obj);
+ElunaConstrainedObjectRef<Quest> GetWeakPtrFor(Quest const* obj);
+ElunaConstrainedObjectRef<Spell> GetWeakPtrFor(Spell const* obj);
+ElunaConstrainedObjectRef<Vehicle> GetWeakPtrFor(Vehicle const* obj);
+
+template <typename T>
+ElunaConstrainedObjectRef<T> GetWeakPtrFor(T const* obj)
+{
+    ElunaConstrainedObjectRef<Object> ref = GetWeakPtrForObjectImpl(obj);
+    return { TRACKABLE_PTR_NAMESPACE static_pointer_cast<T>(ref.Obj), ref.BoundMap };
+}
+
+template <typename T>
 class ElunaObjectImpl : public ElunaObject
 {
 public:
-    ElunaObjectImpl(Eluna* E, T* obj, char const* tname) : ElunaObject(E, tname), _obj(obj), callstackid(E->GetCallstackId())
+    ElunaObjectImpl(Eluna* E, T const* obj, char const* tname) : ElunaObject(E, tname), _obj(GetWeakPtrFor(obj))
     {
     }
 
-    void* GetObj() const override { return _obj; }
-    bool IsValid() const override { return callstackid == E->GetCallstackId(); }
-    void Invalidate() override { callstackid = 1; }
+    void* GetObjIfValid() const override
+    {
+        if (TRACKABLE_PTR_NAMESPACE unique_strong_ref_ptr<T> obj = _obj.Obj.lock())
+            if (!E->GetBoundMap() || !_obj.BoundMap || E->GetBoundMap() == _obj.BoundMap)
+                return obj.get();
+
+        return nullptr;
+    }
 
 private:
+    ElunaConstrainedObjectRef<T> _obj;
     void* _obj;
     uint64 callstackid;
 };
@@ -138,13 +167,11 @@ template <typename T>
 class ElunaObjectValueImpl : public ElunaObject
 {
 public:
-    ElunaObjectValueImpl(Eluna* E, T* obj, char const* tname) : ElunaObject(E, tname), _obj(*obj /*always a copy, what gets passed here might be pointing to something not owned by us*/)
+    ElunaObjectValueImpl(Eluna* E, T const* obj, char const* tname) : ElunaObject(E, tname), _obj(*obj /*always a copy, what gets passed here might be pointing to something not owned by us*/)
     {
     }
 
-    void* GetObj() const override { return const_cast<T*>(&_obj); }
-    bool IsValid() const override { return true; }
-    void Invalidate() override { }
+    void* GetObjIfValid() const override { return const_cast<T*>(&_obj); }
 
 private:
     T _obj;
@@ -371,7 +398,8 @@ public:
         if (!elunaObj)
             return NULL;
 
-        if (!elunaObj->IsValid())
+        void* obj = elunaObj->GetObjIfValid();
+        if (!obj)
         {
             char buff[256];
             snprintf(buff, 256, "%s expected, got pointer to nonexisting (invalidated) object (%s). Check your code.", tname, luaL_typename(L, narg));
@@ -385,7 +413,7 @@ public:
             }
             return NULL;
         }
-        return static_cast<T*>(elunaObj->GetObj());
+        return static_cast<T*>(obj);
     }
 
     static int GetType(lua_State* L)
