@@ -5,7 +5,7 @@ on:
   workflow_call:
 
 jobs:
-  TC-Eluna:
+  TC-Forge:
     strategy:
       fail-fast: false
       matrix:
