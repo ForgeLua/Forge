@@ -950,7 +950,7 @@ int Eluna::Register(uint8 regtype, uint32 entry, ObjectGuid guid, uint32 instanc
     }
     luaL_unref(L, LUA_REGISTRYINDEX, functionRef);
     std::ostringstream oss;
-    oss << "regtype " << static_cast<uint32>(regtype) << ", event " << event_id << ", entry " << entry << ", guid " << guid.GetRawValue() << ", instance " << instanceId;
+    oss << "regtype " << static_cast<uint32>(regtype) << ", event " << event_id << ", entry " << entry << ", guid " << guid.ToHexString() << ", instance " << instanceId;
     luaL_error(L, "Unknown event type (%s)", oss.str().c_str());
     return 0;
 }
