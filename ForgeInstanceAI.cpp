@@ -8,21 +8,6 @@
 #include "ForgeUtility.h"
 #include "lmarshal.h"
 
-
-#if !defined FORGE_TRINITY
-void ForgeInstanceAI::Initialize()
-{
-    ASSERT(!instance->GetForge()->HasInstanceData(instance));
-
-    // Create a new table for instance data.
-    lua_State* L = instance->GetForge()->L;
-    lua_newtable(L);
-    instance->GetForge()->CreateInstanceData(instance);
-
-    instance->GetForge()->OnInitialize(this);
-}
-#endif
-
 void ForgeInstanceAI::Load(const char* data)
 {
     // If we get passed NULL (i.e. `Reload` was called) then use
@@ -79,10 +64,6 @@ void ForgeInstanceAI::Load(const char* data)
                 FORGE_LOG_ERROR("Error while loading instance data: Expected data to be a table (type 5), got type %d instead", lua_type(L, -1));
                 lua_pop(L, 1);
                 // Stack: (empty)
-
-#if !defined FORGE_TRINITY
-                Initialize();
-#endif
             }
         }
         else
@@ -91,10 +72,6 @@ void ForgeInstanceAI::Load(const char* data)
             FORGE_LOG_ERROR("Error while parsing instance data with lua-marshal: %s", lua_tostring(L, -1));
             lua_pop(L, 1);
             // Stack: (empty)
-
-#if !defined FORGE_TRINITY
-            Initialize();
-#endif
         }
 
         delete[] decodedData;
@@ -102,10 +79,6 @@ void ForgeInstanceAI::Load(const char* data)
     else
     {
         FORGE_LOG_ERROR("Error while decoding instance data: Data is not valid base-64");
-
-#if !defined FORGE_TRINITY
-        Initialize();
-#endif
     }
 }
 

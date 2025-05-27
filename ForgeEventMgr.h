@@ -14,20 +14,10 @@
 
 #include "ForgeUtility.h"
 #include "Common.h"
-#if defined FORGE_TRINITY
 #include "Random.h"
-#elif defined FORGE_CMANGOS
-#include "Util/Util.h"
-#else
-#include "Util.h"
-#endif
 #include <map>
 
-#if defined FORGE_TRINITY
 #include "Define.h"
-#else
-#include "Platform/Define.h"
-#endif
 
 class Forge;
 class EventMgr;

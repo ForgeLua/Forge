@@ -19,44 +19,22 @@
 #define EXP_WOTLK 2
 #define EXP_CATA 3
 
-#if !defined FORGE_CMANGOS
 #include "SharedDefines.h"
 #include "ObjectGuid.h"
 #include "Log.h"
-#if defined FORGE_TRINITY
 #include "QueryResult.h"
-#else
-#include "Database/QueryResult.h"
-#endif
-#else
-#include "Globals/SharedDefines.h"
-#include "Entities/ObjectGuid.h"
-#include "Database/QueryResult.h"
-#include "Log/Log.h"
-#endif
 
 #include <unordered_map>
 #include <unordered_set>
 #include <mutex>
 #include <memory>
 
-#if defined FORGE_TRINITY || FORGE_CMANGOS
 #define USING_BOOST
-#endif
 
-#if defined TRINITY_PLATFORM && defined TRINITY_PLATFORM_WINDOWS
 #if TRINITY_PLATFORM == TRINITY_PLATFORM_WINDOWS
 #define FORGE_WINDOWS
 #endif
-#elif defined PLATFORM && defined PLATFORM_WINDOWS
-#if PLATFORM == PLATFORM_WINDOWS
-#define FORGE_WINDOWS
-#endif
-#else
-#error Forge could not determine platform
-#endif
 
-#if defined FORGE_TRINITY
 typedef QueryResult ForgeQuery;
 #define GET_GUID                GetGUID
 #define HIGHGUID_PLAYER         HighGuid::Player
@@ -72,9 +50,7 @@ typedef QueryResult ForgeQuery;
 #define HIGHGUID_MO_TRANSPORT   HighGuid::Mo_Transport
 #define HIGHGUID_INSTANCE       HighGuid::Instance
 #define HIGHGUID_GROUP          HighGuid::Group
-#endif
 
-#if defined FORGE_TRINITY
 #include "fmt/printf.h"
 #define FORGE_LOG_TC_FMT(TC_LOG_MACRO, ...) \
     try { \
@@ -86,37 +62,19 @@ typedef QueryResult ForgeQuery;
 #define FORGE_LOG_INFO(...)     FORGE_LOG_TC_FMT(TC_LOG_INFO, __VA_ARGS__);
 #define FORGE_LOG_ERROR(...)    FORGE_LOG_TC_FMT(TC_LOG_ERROR, __VA_ARGS__);
 #define FORGE_LOG_DEBUG(...)    FORGE_LOG_TC_FMT(TC_LOG_DEBUG, __VA_ARGS__);
-#elif defined FORGE_VMANGOS
-typedef std::shared_ptr<QueryNamedResult> ForgeQuery;
-#define ASSERT                  MANGOS_ASSERT
-#define FORGE_LOG_INFO(...)     sLog.Out(LOG_FORGE, LOG_LVL_BASIC,__VA_ARGS__);
-#define FORGE_LOG_ERROR(...)    sLog.Out(LOG_FORGE, LOG_LVL_ERROR,__VA_ARGS__);
-#define FORGE_LOG_DEBUG(...)    sLog.Out(LOG_FORGE, LOG_LVL_DEBUG,__VA_ARGS__);
-#define GET_GUID                GetObjectGuid
-#define GetGameObjectTemplate   GetGameObjectInfo
-#define GetItemTemplate         GetItemPrototype
-#define GetTemplate             GetProto
-#else
-typedef std::shared_ptr<QueryNamedResult> ForgeQuery;
-#define ASSERT                  MANGOS_ASSERT
-#define FORGE_LOG_INFO(...)     sLog.outString(__VA_ARGS__);
-#define FORGE_LOG_ERROR(...)    sLog.outErrorForge(__VA_ARGS__);
-#define FORGE_LOG_DEBUG(...)    sLog.outDebug(__VA_ARGS__);
-#define GET_GUID                GetObjectGuid
-#define GetGameObjectTemplate   GetGameObjectInfo
-#define GetItemTemplate         GetItemPrototype
-#define GetTemplate             GetProto
-#endif
 
 #if !defined MAKE_NEW_GUID
 #define MAKE_NEW_GUID(l, e, h)  ObjectGuid(h, e, l)
 #endif
+
 #if !defined GUID_ENPART
 #define GUID_ENPART(guid)       ObjectGuid(guid).GetEntry()
 #endif
+
 #if !defined GUID_LOPART
 #define GUID_LOPART(guid)       ObjectGuid(guid).GetCounter()
 #endif
+
 #if !defined GUID_HIPART
 #define GUID_HIPART(guid)       ObjectGuid(guid).GetHigh()
 #endif

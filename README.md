@@ -1,59 +1,62 @@
-<p align="center">
-  <img src="https://avatars.githubusercontent.com/u/213296862" alt="Forge Lua Engine Logo" width="200"/>
-</p>
+### [![Forge](docs/Forge.png)](https://github.com/ForgeLuaEngine/Forge)
+# Forge Lua Engine
 
-<h1 align="center">Forge</h1>
+__Forge Lua Engine__ is an embedded Lua scripting engine designed for World of Warcraft emulators. It provides powerful scripting capabilities and supports several popular emulators, including MaNGOS, CMaNGOS and TrinityCore.
 
-<p align="center">
-  <strong>Modernized Lua scripting, exclusively for TrinityCore.</strong>
-  <br />
-  Simpler, more intuitive, and developer-friendly.
-</p>
+We are continually working to improve Forge's functionality and performance, and strive to deliver an extensive, intuitive and unified scripting experience across emulators.
 
-<p align="center">
-  <a href="https://discord.gg/bjkCVWqqfX">
-    <img src="https://img.shields.io/badge/discord-Join_us!-7289DA.svg?logo=discord&longCache=true&style=flat" alt="Discord">
-  </a>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/license-GPL_v3-blue.svg" alt="License">
-  </a>
-</p>
+If you encounter any issues during installation or while working on scripts, please feel free to [open an issue](https://github.com/ForgeLuaEngine/Forge/issues) or join our community Discord server.
 
----
+## Community
 
-**Forge** reimagines [Eluna Lua Engine](https://github.com/ElunaLuaEngine/Eluna) to provide an improved Lua scripting experience for **TrinityCore**. Our goal is to simplify and enhance script development for World of Warcraft servers.
+Join the official Forge Discord server to connect with other community members, access resources and releases, and receive support. 
 
-## ✨ Why Forge?
+<a href="https://discord.gg/bjkCVWqqfX">
+    <img src="https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&longCache=true&style=flat" />
+</a>
 
-*   🎯 **TrinityCore Focused**: Built specifically for TrinityCore, prioritizing compatibility and ease of use.
-*   🎣 **More Hooks, More Control**: Interact with a wider range of server-side events.
-*   🧹 **Cleaner Codebase**: Easier to understand, maintain, and extend.
-*   🚀 **Simplified C++ Binding**: Link C++ methods to Lua with greater ease.
+## Documentation
 
-Learn more about Forge's features and design in our [comprehensive documentation](http://forgelua.github.io/).
+For comprehensive information on using Forge, please refer to the resources below:
 
-## 🚀 Key Resources
+* [Forge API Documentation](http://forgeluaengine.github.io/) – Detailed API documentation.
+* [Lua Reference Manual](http://www.lua.org/manual/5.2/) – Official Lua 5.2 reference manual.
 
-*   📖 **[API Documentation](http://forgelua.github.io/)**: Explore Forge's capabilities.
-*   ⚙️ **[Installation Guide](docs/INSTALL.md)**: Get Forge set up.
-*   💡 **[Example Scripts](https://github.com/ForgeLua/Scripts)**: Get inspired and start scripting quickly.
-*   🤝 **[Contributing](docs/CONTRIBUTING.md)**: Help us improve Forge!
+### Additional Resources
 
-## 🌍 Community
+* [Installation Guide](https://github.com/ForgeLuaEngine/Forge/blob/master/docs/INSTALL.md) – Step-by-step installation instructions.
+* [Getting Started](https://github.com/ForgeLuaEngine/Forge/blob/master/docs/USAGE.md) – Basic usage and examples.
+* [Forge Features](https://github.com/ForgeLuaEngine/Forge/blob/master/docs/IMPL_DETAILS.md) – Overview of key features and implementation details.
+* [Hook Documentation](https://github.com/ForgeLuaEngine/Forge/blob/master/hooks/Hooks.h) – Documentation of available hooks.
+* [Example Scripts](https://github.com/ForgeLuaEngine/Scripts) – Sample scripts to get you started.
+* [Contributing Guide](https://github.com/ForgeLuaEngine/Forge/blob/master/docs/CONTRIBUTING.md) – Instructions for contributing to Forge.
 
-Need help or want to share your creations? Join us on Discord!
+## Source
 
-<p align="center">
-  <a href="https://discord.gg/bjkCVWqqfX">
-    <img src="https://img.shields.io/discord/809828032938442763?logo=discord&label=Discord&style=for-the-badge" alt="Forge Lua Engine Discord Server"/>
-  </a>
-</p>
+The Forge source code is available on GitHub:
 
-## 🔗 TrinityCore Compatibility
+- [Forge Source](https://github.com/ForgeLuaEngine/Forge)
 
-Forge is designed for the WotLK branch of TrinityCore:
-*   **TrinityCore with Forge (WotLK)** – [ForgeLua/ForgeTrinityWotlk](https://github.com/ForgeLua/ForgeTrinityWotlk)
+### Emulator sources and forks
 
----
+Below are the emulator sources and specific forks that include the required modifications for Forge compatibility:
 
-Forge Lua Engine is licensed under **GPL v3**. Many thanks to the Eluna Lua Engine team and the TrinityCore community.
+- **TrinityCore with Forge** - Maintained by us!
+    - [WotLK](https://github.com/ForgeLuaEngine/ForgeTrinityWotlk) [![automerge](https://github.com/ForgeLuaEngine/ForgeTrinityWotlk/actions/workflows/auto-merge.yml/badge.svg)](https://github.com/ForgeLuaEngine/ForgeTrinityWotlk/actions/workflows/auto-merge.yml)
+
+- **MaNGOS with Forge**
+  - [Vanilla](https://github.com/mangoszero/server)  
+  - [TBC](https://github.com/mangosone/server)  
+  - [WoTLK](https://github.com/mangostwo/server)  
+
+- **cMaNGOS with Forge** – Maintained by __[Niam5](https://github.com/Niam5)__
+  - [Vanilla](https://github.com/Niam5/Forge-CMaNGOS-Classic)
+  - [TBC](https://github.com/Niam5/Forge-CMaNGOS-TBC)
+  - [WoTLK](https://github.com/Niam5/Forge-CMaNGOS-WotLK)
+
+- **AzerothCore Forge Module** - Third party fork maintained by AzerothCore
+  - [AzerothCore Forge Module](https://github.com/azerothcore/mod-forge)
+
+## License
+
+This project is licensed under the terms described in the [LICENSE](https://github.com/ForgeLuaEngine/Forge/blob/master/LICENSE) file.

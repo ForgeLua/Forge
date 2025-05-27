@@ -16,7 +16,6 @@
 #include "ForgeUtility.h"
 #include "Hooks.h"
 
-#if !defined FORGE_CMANGOS
 #include "DBCEnums.h"
 #include "Group.h"
 #include "Item.h"
@@ -24,19 +23,6 @@
 #include "SharedDefines.h"
 #include "Weather.h"
 #include "World.h"
-#if defined FORGE_VMANGOS
-#include "Player.h"
-#endif
-#else
-#include "Entities/Item.h"
-#include "Globals/SharedDefines.h"
-#include "Groups/Group.h"
-#include "Maps/Map.h"
-#include "Server/DBCEnums.h"
-#include "Weather/Weather.h"
-#include "World/World.h"
-#include "Entities/Player.h"
-#endif
 
 #include <mutex>
 #include <memory>
@@ -67,7 +53,6 @@ class WorldPacket;
 struct AreaTriggerEntry;
 struct AuctionEntry;
 
-#if defined FORGE_TRINITY
 class Battleground;
 class GameObjectAI;
 class InstanceScript;
@@ -77,33 +62,6 @@ struct ItemTemplate;
 typedef Battleground BattleGround;
 typedef BattlegroundTypeId BattleGroundTypeId;
 typedef InstanceScript InstanceData;
-#else
-class InstanceData;
-struct ItemPrototype;
-struct SpellEntry;
-typedef ItemPrototype ItemTemplate;
-typedef SpellEffectIndex SpellEffIndex;
-typedef SpellEntry SpellInfo;
-
-#if defined FORGE_CMANGOS
-class TemporarySpawn;
-typedef TemporarySpawn TempSummon;
-#endif
-
-#if defined FORGE_VMANGOS || FORGE_MANGOS
-class TemporarySummon;
-typedef TemporarySummon TempSummon;
-#endif
-
-#if FORGE_EXPANSION == EXP_CLASSIC
-typedef int Difficulty;
-#endif
-
-#if FORGE_EXPANSION >= EXP_WOTLK
-class VehicleInfo;
-typedef VehicleInfo Vehicle;
-#endif
-#endif
 
 struct lua_State;
 class EventMgr;
@@ -135,15 +93,7 @@ enum MethodRegisterState
 
 #define FORGE_STATE_PTR "Forge State Ptr"
 
-#if defined FORGE_TRINITY
 #define FORGE_GAME_API TC_GAME_API
-#define TRACKABLE_PTR_NAMESPACE ::Trinity::
-#else
-#define FORGE_GAME_API
-#if defined FORGE_CMANGOS
-#define TRACKABLE_PTR_NAMESPACE ::MaNGOS::
-#endif
-#endif
 
 class FORGE_GAME_API Forge
 {
@@ -159,13 +109,11 @@ private:
     // Indicates that the lua state should be reloaded
     bool reload = false;
 
-#if !defined TRACKABLE_PTR_NAMESPACE
     // A counter for lua event stacks that occur (see event_level).
     // This is used to determine whether an object belongs to the current call stack or not.
     // 0 is reserved for always belonging to the call stack
     // 1 is reserved for a non valid callstackid
     uint64 callstackid = 2;
-#endif
     // A counter for the amount of nested events. When the event_level
     // reaches 0 we are about to return back to C++. At this point the
     // objects used during the event stack are invalidated.
@@ -188,9 +136,7 @@ private:
     void CloseLua();
     void DestroyBindStores();
     void CreateBindStores();
-#if !defined TRACKABLE_PTR_NAMESPACE
     void InvalidateObjects();
-#endif
 
     // Use ReloadForge() to make forge reload
     // This is called on world update to reload forge
@@ -243,10 +189,8 @@ public:
     lua_State* L;
     EventMgr* eventMgr;
 
-#if defined FORGE_TRINITY
     QueryCallbackProcessor queryProcessor;
     QueryCallbackProcessor& GetQueryProcessor() { return queryProcessor; }
-#endif
 
     BindingMap< EventKey<Hooks::ServerEvents> >*     ServerEventBindings;
     BindingMap< EventKey<Hooks::PlayerEvents> >*     PlayerEventBindings;
@@ -335,9 +279,7 @@ public:
 
     void RunScripts();
     bool HasLuaState() const { return L != NULL; }
-#if !defined TRACKABLE_PTR_NAMESPACE
     uint64 GetCallstackId() const { return callstackid; }
-#endif
     int Register(uint8 reg, uint32 entry, ObjectGuid guid, uint32 instanceId, uint32 event_id, int functionRef, uint32 shots);
     void UpdateForge(uint32 diff);
 
@@ -462,10 +404,8 @@ public:
     bool OnQuestAccept(Player* pPlayer, GameObject* pGameObject, Quest const* pQuest);
     bool OnQuestReward(Player* pPlayer, GameObject* pGameObject, Quest const* pQuest, uint32 opt);
     void GetDialogStatus(const Player* pPlayer, const GameObject* pGameObject);
-#if FORGE_EXPANSION >= EXP_WOTLK
     void OnDestroyed(GameObject* pGameObject, WorldObject* attacker);
     void OnDamaged(GameObject* pGameObject, WorldObject* attacker);
-#endif
     void OnLootStateChanged(GameObject* pGameObject, uint32 state);
     void OnGameObjectStateChanged(GameObject* pGameObject, uint32 state);
     void UpdateAI(GameObject* pGameObject, uint32 diff);
@@ -490,9 +430,6 @@ public:
     void OnFreeTalentPointsChanged(Player* pPlayer, uint32 newPoints);
     void OnTalentsReset(Player* pPlayer, bool noCost);
     void OnMoneyChanged(Player* pPlayer, int32& amount);
-#if FORGE_EXPANSION >= EXP_CATA
-    void OnMoneyChanged(Player* pPlayer, int64& amount);
-#endif
     void OnGiveXP(Player* pPlayer, uint32& amount, Unit* pVictim);
     void OnReputationChange(Player* pPlayer, uint32 factionID, int32& standing, bool incremental);
     void OnDuelRequest(Player* pTarget, Player* pChallenger);
@@ -518,14 +455,12 @@ public:
     void HandleGossipSelectOption(Player* pPlayer, uint32 menuId, uint32 sender, uint32 action, const std::string& code);
     void OnAchievementComplete(Player* pPlayer, uint32 achievementId);
 
-#if FORGE_EXPANSION >= EXP_WOTLK
     /* Vehicle */
     void OnInstall(Vehicle* vehicle);
     void OnUninstall(Vehicle* vehicle);
     void OnInstallAccessory(Vehicle* vehicle, Creature* accessory);
     void OnAddPassenger(Vehicle* vehicle, Unit* passenger, int8 seatId);
     void OnRemovePassenger(Vehicle* vehicle, Unit* passenger);
-#endif
 
     /* AreaTrigger */
     bool OnAreaTrigger(Player* pPlayer, AreaTriggerEntry const* pTrigger);
@@ -548,10 +483,6 @@ public:
     void OnDisband(Guild* guild);
     void OnMemberWitdrawMoney(Guild* guild, Player* player, uint32& amount, bool isRepair);
     void OnMemberDepositMoney(Guild* guild, Player* player, uint32& amount);
-#if FORGE_EXPANSION >= EXP_CATA
-    void OnMemberWitdrawMoney(Guild* guild, Player* player, uint64& amount, bool isRepair);
-    void OnMemberDepositMoney(Guild* guild, Player* player, uint64& amount);
-#endif
     void OnItemMove(Guild* guild, Player* player, Item* pItem, bool isSrcBank, uint8 srcContainer, uint8 srcSlotId, bool isDestBank, uint8 destContainer, uint8 destSlotId);
     void OnEvent(Guild* guild, uint8 eventType, uint32 playerGuid1, uint32 playerGuid2, uint8 newRank);
     void OnBankEvent(Guild* guild, uint8 eventType, uint8 tabId, uint32 playerGuid, uint32 itemOrMoney, uint16 itemStackCount, uint8 destTabId);

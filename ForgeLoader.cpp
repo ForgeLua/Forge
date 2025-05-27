@@ -14,23 +14,14 @@
 #include <thread>
 #include <charconv>
 
-#if defined USING_BOOST
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
-#else
-#include <filesystem>
-namespace fs = std::filesystem;
-#endif
 
 #if defined FORGE_WINDOWS
 #include <Windows.h>
 #endif
 
-#if defined FORGE_TRINITY || FORGE_MANGOS
 #include "MapManager.h"
-#elif defined FORGE_CMANGOS
-#include "Maps/MapManager.h"
-#endif
 
 extern "C" {
 #include <lua.h>
@@ -38,7 +29,6 @@ extern "C" {
 #include <lauxlib.h>
 }
 
-#if defined FORGE_TRINITY
 void ForgeUpdateListener::handleFileAction(efsw::WatchID /*watchid*/, std::string const& dir, std::string const& filename, efsw::Action /*action*/, std::string /*oldFilename*/)
 {
     auto const path = fs::absolute(filename, dir);
@@ -53,13 +43,10 @@ void ForgeUpdateListener::handleFileAction(efsw::WatchID /*watchid*/, std::strin
 
     sForgeLoader->ReloadForgeForMap(RELOAD_ALL_STATES);
 }
-#endif
 
 ForgeLoader::ForgeLoader() : m_cacheState(SCRIPT_CACHE_NONE)
 {
-#if defined FORGE_TRINITY
     lua_scriptWatcher = -1;
-#endif
 }
 
 ForgeLoader* ForgeLoader::instance()
@@ -74,13 +61,11 @@ ForgeLoader::~ForgeLoader()
     if (m_reloadThread.joinable())
         m_reloadThread.join();
 
-#if defined FORGE_TRINITY
     if (lua_scriptWatcher >= 0)
     {
         lua_fileWatcher.removeWatch(lua_scriptWatcher);
         lua_scriptWatcher = -1;
     }
-#endif
 }
 
 void ForgeLoader::ReloadScriptCache()
@@ -308,7 +293,6 @@ void ForgeLoader::ProcessScript(lua_State* L, std::string filename, const std::s
     FORGE_LOG_DEBUG("[Forge]: ProcessScript processed `%s` successfully", fullpath.c_str());
 }
 
-#if defined FORGE_TRINITY
 void ForgeLoader::InitializeFileWatcher()
 {
     std::string lua_folderpath = sForgeConfig->GetConfig(CONFIG_FORGE_SCRIPT_PATH);
@@ -325,7 +309,6 @@ void ForgeLoader::InitializeFileWatcher()
 
     lua_fileWatcher.watch();
 }
-#endif
 
 static bool ScriptPathComparator(const LuaScript& first, const LuaScript& second)
 {
@@ -354,18 +337,10 @@ void ForgeLoader::ReloadForgeForMap(int mapId)
     if (mapId != RELOAD_CACHE_ONLY)
     {
         if (mapId == RELOAD_GLOBAL_STATE || mapId == RELOAD_ALL_STATES)
-#if defined FORGE_TRINITY
             if (Forge* f = sWorld->GetForge())
-#else
-            if (Forge* f = sWorld.GetForge())
-#endif
                 f->ReloadForge();
 
-#if defined FORGE_TRINITY
         sMapMgr->DoForAllMaps([&](Map* map)
-#else
-        sMapMgr.DoForAllMaps([&](Map* map)
-#endif
             {
                 if (mapId == RELOAD_ALL_STATES || mapId == static_cast<int>(map->GetId()))
                     if (Forge* f = map->GetForge())

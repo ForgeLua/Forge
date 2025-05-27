@@ -10,37 +10,20 @@
  */
 
 #include "ForgeUtility.h"
-#if !defined FORGE_CMANGOS
 #include "World.h"
 #include "Object.h"
 #include "Unit.h"
 #include "GameObject.h"
 #include "DBCStores.h"
-#else
-#include "World/World.h"
-#include "Entities/Object.h"
-#include "Entities/Unit.h"
-#include "Entities/GameObject.h"
-#include "Server/DBCStores.h"
-#include "Util/Timer.h"
-#endif
 
 uint32 ForgeUtil::GetCurrTime()
 {
-#if defined FORGE_TRINITY || FORGE_MANGOS
     return getMSTime();
-#else
-    return WorldTimer::getMSTime();
-#endif
 }
 
 uint32 ForgeUtil::GetTimeDiff(uint32 oldMSTime)
 {
-#if defined FORGE_TRINITY || FORGE_MANGOS
     return GetMSTimeDiffToNow(oldMSTime);
-#else
-    return WorldTimer::getMSTimeDiff(oldMSTime, WorldTimer::getMSTime());
-#endif
 }
 
 ForgeUtil::ObjectGUIDCheck::ObjectGUIDCheck(ObjectGuid guid) : _guid(guid)
@@ -69,11 +52,7 @@ ForgeUtil::WorldObjectInRangeCheck::WorldObjectInRangeCheck(bool nearest, WorldO
         if (GameObject const* go = i_obj->ToGameObject())
             i_obj_unit = go->GetOwner();
     if (!i_obj_unit)
-#if !defined FORGE_VMANGOS
         i_obj_fact = sFactionTemplateStore.LookupEntry(14);
-#else
-        i_obj_fact = sObjectMgr.GetFactionTemplateEntry(14);
-#endif
 }
 WorldObject const& ForgeUtil::WorldObjectInRangeCheck::GetFocusObject() const
 {
@@ -103,11 +82,7 @@ bool ForgeUtil::WorldObjectInRangeCheck::operator()(WorldObject* u)
             {
                 if (i_obj_fact)
                 {
-#if !defined FORGE_MANGOS
                     if ((i_obj_fact->IsHostileTo(*target->GetFactionTemplateEntry())) != (i_hostile == 1))
-#else
-                    if ((i_obj_fact->IsHostileTo(*target->getFactionTemplateEntry())) != (i_hostile == 1))
-#endif
                         return false;
                 }
                 else if (i_hostile == 1)

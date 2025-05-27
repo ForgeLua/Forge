@@ -21,16 +21,7 @@ extern "C"
 #include "LuaEngine.h"
 #include "ForgeUtility.h"
 #include "ForgeCompat.h"
-#if !defined FORGE_CMANGOS
 #include "SharedDefines.h"
-#else
-#include "Globals/SharedDefines.h"
-#include "Util/UniqueTrackablePtr.h"
-#endif
-
-#if defined FORGE_TRINITY
-#include "UniqueTrackablePtr.h"
-#endif
 
 class ForgeObject
 {
@@ -47,63 +38,18 @@ public:
     virtual void* GetObjIfValid() const = 0;
     // Returns pointer to the wrapped object's type name
     const char* GetTypeName() const { return type_name; }
-#if !defined TRACKABLE_PTR_NAMESPACE
     // Invalidates the pointer if it should be invalidated
     virtual void Invalidate() = 0;
-#endif
 
 protected:
     Forge* F;
     const char* type_name;
 };
 
-#if defined TRACKABLE_PTR_NAMESPACE
-template <typename T>
-struct ForgeConstrainedObjectRef
-{
-    TRACKABLE_PTR_NAMESPACE unique_weak_ptr<T> Obj;
-    Map const* BoundMap = nullptr;
-};
-
-ForgeConstrainedObjectRef<Aura> GetWeakPtrFor(Aura const* obj);
-ForgeConstrainedObjectRef<BattleGround> GetWeakPtrFor(BattleGround const* obj);
-ForgeConstrainedObjectRef<Group> GetWeakPtrFor(Group const* obj);
-ForgeConstrainedObjectRef<Guild> GetWeakPtrFor(Guild const* obj);
-ForgeConstrainedObjectRef<Map> GetWeakPtrFor(Map const* obj);
-ForgeConstrainedObjectRef<Object> GetWeakPtrForObjectImpl(Object const* obj);
-ForgeConstrainedObjectRef<Quest> GetWeakPtrFor(Quest const* obj);
-ForgeConstrainedObjectRef<Spell> GetWeakPtrFor(Spell const* obj);
-#if FORGE_EXPANSION >= EXP_WOTLK
-ForgeConstrainedObjectRef<Vehicle> GetWeakPtrFor(Vehicle const* obj);
-#endif
-
-template <typename T>
-ForgeConstrainedObjectRef<T> GetWeakPtrFor(T const* obj)
-{
-    ForgeConstrainedObjectRef<Object> ref = GetWeakPtrForObjectImpl(obj);
-    return { TRACKABLE_PTR_NAMESPACE static_pointer_cast<T>(ref.Obj), ref.BoundMap };
-}
-
-#endif
-
 template <typename T>
 class ForgeObjectImpl : public ForgeObject
 {
 public:
-#if defined TRACKABLE_PTR_NAMESPACE
-    ForgeObjectImpl(Forge* F, T const* obj, char const* tname) : ForgeObject(F, tname), _obj(GetWeakPtrFor(obj))
-    {
-    }
-
-    void* GetObjIfValid() const override
-    {
-        if (TRACKABLE_PTR_NAMESPACE unique_strong_ref_ptr<T> obj = _obj.Obj.lock())
-            if (!F->GetBoundMap() || !_obj.BoundMap || F->GetBoundMap() == _obj.BoundMap)
-                return obj.get();
-
-        return nullptr;
-    }
-#else
     ForgeObjectImpl(Forge* F, T* obj, char const* tname) : ForgeObject(F, tname), _obj(obj), callstackid(F->GetCallstackId())
     {
     }
@@ -117,15 +63,10 @@ public:
     }
 
     void Invalidate() override { callstackid = 1; }
-#endif
 
 private:
-#if defined TRACKABLE_PTR_NAMESPACE
-    ForgeConstrainedObjectRef<T> _obj;
-#else
     void* _obj;
     uint64 callstackid;
-#endif
 };
 
 template <typename T>
@@ -138,9 +79,7 @@ public:
 
     void* GetObjIfValid() const override { return const_cast<T*>(&_obj); }
 
-#if !defined TRACKABLE_PTR_NAMESPACE
     void Invalidate() override { }
-#endif
 
 private:
     T _obj;

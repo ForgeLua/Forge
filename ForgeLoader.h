@@ -10,9 +10,7 @@
 
 #include "LuaEngine.h"
 
-#if defined FORGE_TRINITY
 #include <efsw/efsw.hpp>
-#endif
 
 extern "C"
 {
@@ -58,12 +56,10 @@ public:
     const std::string& GetRequirePath() const { return m_requirePath; }
     const std::string& GetRequireCPath() const { return m_requirecPath; }
 
-#if defined FORGE_TRINITY
     // efsw file watcher
     void InitializeFileWatcher();
     efsw::FileWatcher lua_fileWatcher;
     efsw::WatchID lua_scriptWatcher;
-#endif
 
 private:
     void ReloadScriptCache();
@@ -82,7 +78,6 @@ private:
     std::thread m_reloadThread;
 };
 
-#if defined FORGE_TRINITY
 /// File watcher responsible for watching lua scripts
 class ForgeUpdateListener : public efsw::FileWatchListener
 {
@@ -95,7 +90,6 @@ public:
 };
 
 static ForgeUpdateListener forgeUpdateListener;
-#endif
 
 #define sForgeLoader ForgeLoader::instance()
 

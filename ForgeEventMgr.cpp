@@ -11,11 +11,7 @@
 
 #include "ForgeEventMgr.h"
 #include "LuaEngine.h"
-#if !defined FORGE_CMANGOS
 #include "Object.h"
-#else
-#include "Entities/Object.h"
-#endif
 
 extern "C"
 {

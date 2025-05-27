@@ -9,11 +9,7 @@
  * See LICENSE file or <https://www.gnu.org/licenses/>.
  */
 
-#if defined FORGE_TRINITY
 #include "Config.h"
-#else
-#include "Config/Config.h"
-#endif
 #include "ForgeConfig.h"
 
 ForgeConfig::ForgeConfig()
@@ -50,22 +46,12 @@ void ForgeConfig::Initialize()
 
 void ForgeConfig::SetConfig(ForgeConfigBoolValues index, char const* fieldname, bool defvalue)
 {
-#if defined FORGE_TRINITY
     SetConfig(index, sConfigMgr->GetBoolDefault(fieldname, defvalue));
-#else
-    SetConfig(index, sConfig.GetBoolDefault(fieldname, defvalue));
-#endif
 }
 
 void ForgeConfig::SetConfig(ForgeConfigStringValues index, char const* fieldname, std::string defvalue)
 {
-#if defined FORGE_TRINITY
     SetConfig(index, sConfigMgr->GetStringDefault(fieldname, defvalue));
-#elif defined FORGE_CMANGOS
-    SetConfig(index, sConfig.GetStringDefault(fieldname, defvalue));
-#else
-    SetConfig(index, sConfig.GetStringDefault(fieldname, defvalue.c_str()));
-#endif
 }
 
 bool ForgeConfig::IsForgeEnabled()

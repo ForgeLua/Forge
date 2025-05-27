@@ -309,13 +309,11 @@ void Forge::RunScripts()
     OnLuaStateOpen();
 }
 
-#if !defined TRACKABLE_PTR_NAMESPACE
 void Forge::InvalidateObjects()
 {
     ++callstackid;
     ASSERT(callstackid && "Callstackid overflow");
 }
-#endif
 
 void Forge::Report(lua_State* _L)
 {
@@ -581,74 +579,111 @@ static unsigned int CheckUnsignedRange(lua_State* luastate, int narg, unsigned i
     return static_cast<unsigned int>(value);
 }
 
-template<> bool Forge::CHECKVAL<bool>(int narg)
+template<>
+bool Forge::CHECKVAL<bool>(int narg)
 {
     return lua_toboolean(L, narg) != 0;
 }
-template<> float Forge::CHECKVAL<float>(int narg)
+
+template<>
+float Forge::CHECKVAL<float>(int narg)
 {
     return static_cast<float>(luaL_checknumber(L, narg));
 }
-template<> double Forge::CHECKVAL<double>(int narg)
+
+template<>
+double Forge::CHECKVAL<double>(int narg)
 {
     return luaL_checknumber(L, narg);
 }
-template<> signed char Forge::CHECKVAL<signed char>(int narg)
+
+template<>
+signed char Forge::CHECKVAL<signed char>(int narg)
 {
     return CheckIntegerRange(L, narg, SCHAR_MIN, SCHAR_MAX);
 }
-template<> unsigned char Forge::CHECKVAL<unsigned char>(int narg)
+
+template<>
+unsigned char Forge::CHECKVAL<unsigned char>(int narg)
 {
     return CheckUnsignedRange(L, narg, UCHAR_MAX);
 }
-template<> short Forge::CHECKVAL<short>(int narg)
+
+template<>
+short Forge::CHECKVAL<short>(int narg)
 {
     return CheckIntegerRange(L, narg, SHRT_MIN, SHRT_MAX);
 }
-template<> unsigned short Forge::CHECKVAL<unsigned short>(int narg)
+
+template<>
+unsigned short Forge::CHECKVAL<unsigned short>(int narg)
 {
     return CheckUnsignedRange(L, narg, USHRT_MAX);
 }
-template<> int Forge::CHECKVAL<int>(int narg)
+
+template<>
+int Forge::CHECKVAL<int>(int narg)
 {
     return CheckIntegerRange(L, narg, INT_MIN, INT_MAX);
 }
-template<> unsigned int Forge::CHECKVAL<unsigned int>(int narg)
+
+template<>
+unsigned int Forge::CHECKVAL<unsigned int>(int narg)
 {
     return CheckUnsignedRange(L, narg, UINT_MAX);
 }
-template<> const char* Forge::CHECKVAL<const char*>(int narg)
+
+template<>
+const char* Forge::CHECKVAL<const char*>(int narg)
 {
     return luaL_checkstring(L, narg);
 }
-template<> std::string Forge::CHECKVAL<std::string>(int narg)
+
+template<>
+std::string Forge::CHECKVAL<std::string>(int narg)
 {
     return luaL_checkstring(L, narg);
 }
-template<> long long Forge::CHECKVAL<long long>(int narg)
+
+template<>
+long long Forge::CHECKVAL<long long>(int narg)
 {
     if (lua_isnumber(L, narg))
         return static_cast<long long>(CHECKVAL<double>(narg));
     return *(Forge::CHECKOBJ<long long>(narg, true));
 }
-template<> unsigned long long Forge::CHECKVAL<unsigned long long>(int narg)
+
+template<>
+unsigned long long Forge::CHECKVAL<unsigned long long>(int narg)
 {
     if (lua_isnumber(L, narg))
         return static_cast<unsigned long long>(CHECKVAL<uint32>(narg));
     return *(Forge::CHECKOBJ<unsigned long long>(narg, true));
 }
-template<> long Forge::CHECKVAL<long>(int narg)
+
+template<>
+long Forge::CHECKVAL<long>(int narg)
 {
     return static_cast<long>(CHECKVAL<long long>(narg));
 }
-template<> unsigned long Forge::CHECKVAL<unsigned long>(int narg)
+
+template<>
+unsigned long Forge::CHECKVAL<unsigned long>(int narg)
 {
     return static_cast<unsigned long>(CHECKVAL<unsigned long long>(narg));
 }
-template<> ObjectGuid Forge::CHECKVAL<ObjectGuid>(int narg)
+
+template<>
+ObjectGuid Forge::CHECKVAL<ObjectGuid>(int narg)
 {
     ObjectGuid* guid = CHECKOBJ<ObjectGuid>(narg, true);
     return guid ? *guid : ObjectGuid();
+}
+
+template<>
+AuraRemoveMode Forge::CHECKVAL<AuraRemoveMode>(int index) {
+    uint8 value = static_cast<uint8>(CHECKVAL<uint8>(index));
+    return static_cast<AuraRemoveMode>(value);
 }
 
 template<> Object* Forge::CHECKOBJ<Object>(int narg, bool error)
@@ -979,11 +1014,7 @@ int Forge::Register(uint8 regtype, uint32 entry, ObjectGuid guid, uint32 instanc
     luaL_unref(L, LUA_REGISTRYINDEX, functionRef);
     std::ostringstream oss;
     oss << "regtype " << static_cast<uint32>(regtype) << ", event " << event_id << ", entry " << entry << ", guid " <<
-#if defined FORGE_TRINITY
         guid.ToHexString()
-#else
-        guid.GetRawValue()
-#endif
         << ", instance " << instanceId;
     luaL_error(L, "Unknown event type (%s)", oss.str().c_str());
     return 0;
@@ -992,15 +1023,11 @@ int Forge::Register(uint8 regtype, uint32 entry, ObjectGuid guid, uint32 instanc
 void Forge::UpdateForge(uint32 diff)
 {
     if (reload && sForgeLoader->GetCacheState() == SCRIPT_CACHE_READY)
-#if defined FORGE_TRINITY
         if(!GetQueryProcessor().HasPendingCallbacks())
-#endif
             _ReloadForge();
 
     eventMgr->globalProcessor->Update(diff);
-#if defined FORGE_TRINITY
     GetQueryProcessor().ProcessReadyCallbacks();
-#endif
 }
 
 /*
@@ -1013,10 +1040,8 @@ void Forge::CleanUpStack(int number_of_arguments)
     lua_pop(L, number_of_arguments + 1); // Add 1 because the caller doesn't know about `event_id`.
     // Stack: (empty)
 
-#if !defined TRACKABLE_PTR_NAMESPACE
     if (event_level == 0)
         InvalidateObjects();
-#endif
 }
 
 /*
