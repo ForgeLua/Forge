@@ -1,14 +1,19 @@
 /*
- * Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
- * This program is free software licensed under GPL version 3
- * Please see the included DOCS/LICENSE.md for more information
+ * Part of Forge <https://github.com/iThorgrim/Forge>, a standalone fork of Eluna Lua Engine.
+ * 
+ * Copyright (C) Forge contributors
+ * Based on Eluna <https://elunaluaengine.github.io/>
+ * Copyright (C) Eluna Lua Engine contributors
+ * 
+ * Licensed under the GNU GPL v3 only.
+ * See LICENSE file or <https://www.gnu.org/licenses/>.
  */
 
 #include "Hooks.h"
 #include "HookHelpers.h"
 #include "LuaEngine.h"
 #include "BindingMap.h"
-#include "ElunaTemplate.h"
+#include "ForgeTemplate.h"
 
 using namespace Hooks;
 
@@ -17,7 +22,7 @@ using namespace Hooks;
     if (!BGEventBindings->HasBindingsFor(key))\
         return;
 
-void Eluna::OnBGStart(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanceId)
+void Forge::OnBGStart(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanceId)
 {
     START_HOOK(BG_EVENT_ON_START);
     HookPush(bg);
@@ -26,7 +31,7 @@ void Eluna::OnBGStart(BattleGround* bg, BattleGroundTypeId bgId, uint32 instance
     CallAllFunctions(BGEventBindings, key);
 }
 
-void Eluna::OnBGEnd(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanceId, Team winner)
+void Forge::OnBGEnd(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanceId, Team winner)
 {
     START_HOOK(BG_EVENT_ON_END);
     HookPush(bg);
@@ -36,7 +41,7 @@ void Eluna::OnBGEnd(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanceId
     CallAllFunctions(BGEventBindings, key);
 }
 
-void Eluna::OnBGCreate(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanceId)
+void Forge::OnBGCreate(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanceId)
 {
     START_HOOK(BG_EVENT_ON_CREATE);
     HookPush(bg);
@@ -45,7 +50,7 @@ void Eluna::OnBGCreate(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanc
     CallAllFunctions(BGEventBindings, key);
 }
 
-void Eluna::OnBGDestroy(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanceId)
+void Forge::OnBGDestroy(BattleGround* bg, BattleGroundTypeId bgId, uint32 instanceId)
 {
     START_HOOK(BG_EVENT_ON_PRE_DESTROY);
     HookPush(bg);

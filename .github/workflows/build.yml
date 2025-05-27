@@ -5,29 +5,29 @@ on:
   workflow_call:
 
 jobs:
-  TC-Eluna:
+  TC-Forge:
     strategy:
       fail-fast: false
       matrix:
         include: 
-          - eluna: OFF
+          - forge: OFF
             lua: lua52
-          - eluna: ON
+          - forge: ON
             lua: lua51
-          - eluna: ON
+          - forge: ON
             lua: lua52
-          - eluna: ON
+          - forge: ON
             lua: lua53
-          - eluna: ON
+          - forge: ON
             lua: lua54
-          - eluna: ON
+          - forge: ON
             lua: luajit
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: false
-        repository: ElunaLuaEngine/ElunaTrinityWotlk
+        repository: ForgeLuaEngine/ForgeTrinityWotlk
     - uses: actions/checkout@v4
       with:
         path: src/server/game/LuaEngine
@@ -37,12 +37,12 @@ jobs:
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11
     - name: Setup
       env:
-        ELUNA: ${{ matrix.eluna }}
+        FORGE: ${{ matrix.forge }}
         LUA: ${{ matrix.lua }}
       run: |
         mkdir bin
         cd bin
-        cmake ../ -DELUNA=$ELUNA -DLUA_VERSION=$LUA -DWITH_WARNINGS=1 -DWITH_COREDEBUG=0 -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=1 -DSCRIPTS=dynamic -DSERVERS=1 -DNOJEM=0 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS="-Werror" -DCMAKE_CXX_FLAGS="-Werror" -DCMAKE_C_FLAGS_DEBUG="-DNDEBUG" -DCMAKE_CXX_FLAGS_DEBUG="-DNDEBUG" -DCMAKE_INSTALL_PREFIX=check_install -DBUILD_TESTING=1
+        cmake ../ -DFORGE=$FORGE -DLUA_VERSION=$LUA -DWITH_WARNINGS=1 -DWITH_COREDEBUG=0 -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=1 -DSCRIPTS=dynamic -DSERVERS=1 -DNOJEM=0 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS="-Werror" -DCMAKE_CXX_FLAGS="-Werror" -DCMAKE_C_FLAGS_DEBUG="-DNDEBUG" -DCMAKE_CXX_FLAGS_DEBUG="-DNDEBUG" -DCMAKE_INSTALL_PREFIX=check_install -DBUILD_TESTING=1
         cd ..
     - name: Build
       run: |
@@ -59,17 +59,17 @@ jobs:
         ./worldserver --version
 
 # Cata preservation project has been abandoned, so no need for further build checks on this project
-#  CataPres-Eluna:
+#  CataPres-Forge:
 #    strategy:
 #      fail-fast: false
 #      matrix:
-#        eluna: [ON]
+#        forge: [ON]
 #    runs-on: ubuntu-20.04
 #    steps:
 #    - uses: actions/checkout@v4
 #      with:
 #        submodules: false
-#        repository: Niam5/ElunaCataPreservation
+#        repository: Niam5/ForgeCataPreservation
 #    - uses: actions/checkout@v4
 #      with:
 #        path: src/server/game/LuaEngine
@@ -79,11 +79,11 @@ jobs:
 #        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10
 #    - name: Setup
 #      env:
-#        ELUNA: ${{ matrix.eluna }}
+#        FORGE: ${{ matrix.forge }}
 #      run: |
 #        mkdir bin
 #        cd bin
-#        cmake ../ -DELUNA=$ELUNA -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=1 -DSERVERS=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG="-DNDEBUG" -DCMAKE_CXX_FLAGS_DEBUG="-DNDEBUG" -DCMAKE_INSTALL_PREFIX=check_install -DBUILD_TESTING=1
+#        cmake ../ -DFORGE=$FORGE -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=1 -DSERVERS=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG="-DNDEBUG" -DCMAKE_CXX_FLAGS_DEBUG="-DNDEBUG" -DCMAKE_INSTALL_PREFIX=check_install -DBUILD_TESTING=1
 #        cd ..
 #    - name: Build
 #      run: |
@@ -99,7 +99,7 @@ jobs:
 #        ./bnetserver --version
 #        ./worldserver --version
 
-#  AC-Eluna:
+#  AC-Forge:
 #    strategy:
 #      fail-fast: false
 #    runs-on: ubuntu-20.04
@@ -112,11 +112,11 @@ jobs:
 #      - uses: actions/checkout@v4
 #        with:
 #          submodules: false
-#          repository: azerothcore/mod-eluna-lua-engine
-#          path: modules/mod-eluna-lua-engine
+#          repository: azerothcore/mod-forge-lua-engine
+#          path: modules/mod-forge-lua-engine
 #      - uses: actions/checkout@v4
 #        with:
-#          path: modules/mod-eluna-lua-engine/LuaEngine
+#          path: modules/mod-forge-lua-engine/LuaEngine
 #      - name: Configure OS
 #        run: |
 #          # Copy paste of https://github.com/azerothcore/azerothcore-wotlk/blob/master/apps/ci/ci-install.sh
@@ -155,11 +155,11 @@ jobs:
 #      - name: Check startup errors
 #        run: source ./apps/ci/ci-error-check.sh
 
-  mangos-Eluna:
+  mangos-Forge:
     strategy:
       fail-fast: false
       matrix:
-        eluna: [ON, OFF]
+        forge: [ON, OFF]
         patch: [zero, one, two, three]
     runs-on: ubuntu-latest
     steps:
@@ -179,29 +179,29 @@ jobs:
           sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang 100
       - name: Configure
         env:
-          ELUNA: ${{ matrix.eluna }}
+          FORGE: ${{ matrix.forge }}
         run: |
           test -d _build || mkdir _build
           test -d _install || mkdir _install
           cd _build
-          cmake .. -DCMAKE_INSTALL_PREFIX=../_install -DBUILD_TOOLS:BOOL=1 -DBUILD_MANGOSD:BOOL=1 -DBUILD_REALMD:BOOL=1 -DSOAP:BOOL=1 -DSCRIPT_LIB_ELUNA:BOOL=$ELUNA -DSCRIPT_LIB_SD3:BOOL=1 -DPLAYERBOTS:BOOL=0 -DUSE_STORMLIB:BOOL=1
+          cmake .. -DCMAKE_INSTALL_PREFIX=../_install -DBUILD_TOOLS:BOOL=1 -DBUILD_MANGOSD:BOOL=1 -DBUILD_REALMD:BOOL=1 -DSOAP:BOOL=1 -DSCRIPT_LIB_FORGE:BOOL=$FORGE -DSCRIPT_LIB_SD3:BOOL=1 -DPLAYERBOTS:BOOL=0 -DUSE_STORMLIB:BOOL=1
       - name: Build
         run: |
           cd _build
           make -j 6
           
-  cmangos-Eluna:
+  cmangos-Forge:
     strategy:
       fail-fast: false
       matrix:
-        eluna: [ON, OFF]
+        forge: [ON, OFF]
         patch: [Classic, TBC, WotLK, Cata]
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: false
-          repository: Niam5/Eluna-CMaNGOS-${{ matrix.patch }}
+          repository: Niam5/Forge-CMaNGOS-${{ matrix.patch }}
           ref: master
       - uses: actions/checkout@v4
         with:
@@ -213,11 +213,11 @@ jobs:
           sudo apt-get update && sudo apt-get install -yq libboost-all-dev
       - name: Configure
         env:
-          ELUNA: ${{ matrix.eluna }}
+          FORGE: ${{ matrix.forge }}
         run: |
           mkdir bin
           cd bin
-          cmake .. -DBUILD_ELUNA=$ELUNA -DCMAKE_INSTALL_PREFIX=install -DBUILD_PLAYERBOT=OFF -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl/
+          cmake .. -DBUILD_FORGE=$FORGE -DCMAKE_INSTALL_PREFIX=install -DBUILD_PLAYERBOT=OFF -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl/
           cd ..
       - name: Build
         run: |
@@ -225,7 +225,7 @@ jobs:
           make -j4
           make install
 
-  vmangos-Eluna:
+  vmangos-Forge:
     strategy:
       fail-fast: false
     runs-on: ubuntu-latest
@@ -233,11 +233,11 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: false
-        repository: Eluna-Ports/Eluna-VMaNGOS
+        repository: Forge-Ports/Forge-VMaNGOS
         ref: development
     - uses: actions/checkout@v4
       with:
-        path: src/modules/Eluna
+        path: src/modules/Forge
 
     - name: Dependencies
       run: |

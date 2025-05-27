@@ -1,17 +1,22 @@
 /*
-* Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
-* This program is free software licensed under GPL version 3
-* Please see the included DOCS/LICENSE.md for more information
-*/
+ * Part of Forge <https://github.com/iThorgrim/Forge>, a standalone fork of Eluna Lua Engine.
+ * 
+ * Copyright (C) Forge contributors
+ * Based on Eluna <https://elunaluaengine.github.io/>
+ * Copyright (C) Eluna Lua Engine contributors
+ * 
+ * Licensed under the GNU GPL v3 only.
+ * See LICENSE file or <https://www.gnu.org/licenses/>.
+ */
 
 #ifndef _LUA_ENGINE_H
 #define _LUA_ENGINE_H
 
 #include "Common.h"
-#include "ElunaUtility.h"
+#include "ForgeUtility.h"
 #include "Hooks.h"
 
-#if !defined ELUNA_CMANGOS
+#if !defined FORGE_CMANGOS
 #include "DBCEnums.h"
 #include "Group.h"
 #include "Item.h"
@@ -19,7 +24,7 @@
 #include "SharedDefines.h"
 #include "Weather.h"
 #include "World.h"
-#if defined ELUNA_VMANGOS
+#if defined FORGE_VMANGOS
 #include "Player.h"
 #endif
 #else
@@ -46,7 +51,7 @@ class Channel;
 class Corpse;
 class Creature;
 class CreatureAI;
-class ElunaInstanceAI;
+class ForgeInstanceAI;
 class GameObject;
 class Group;
 class Guild;
@@ -62,7 +67,7 @@ class WorldPacket;
 struct AreaTriggerEntry;
 struct AuctionEntry;
 
-#if defined ELUNA_TRINITY
+#if defined FORGE_TRINITY
 class Battleground;
 class GameObjectAI;
 class InstanceScript;
@@ -80,21 +85,21 @@ typedef ItemPrototype ItemTemplate;
 typedef SpellEffectIndex SpellEffIndex;
 typedef SpellEntry SpellInfo;
 
-#if defined ELUNA_CMANGOS
+#if defined FORGE_CMANGOS
 class TemporarySpawn;
 typedef TemporarySpawn TempSummon;
 #endif
 
-#if defined ELUNA_VMANGOS || ELUNA_MANGOS
+#if defined FORGE_VMANGOS || FORGE_MANGOS
 class TemporarySummon;
 typedef TemporarySummon TempSummon;
 #endif
 
-#if ELUNA_EXPANSION == EXP_CLASSIC
+#if FORGE_EXPANSION == EXP_CLASSIC
 typedef int Difficulty;
 #endif
 
-#if ELUNA_EXPANSION >= EXP_WOTLK
+#if FORGE_EXPANSION >= EXP_WOTLK
 class VehicleInfo;
 typedef VehicleInfo Vehicle;
 #endif
@@ -102,8 +107,8 @@ typedef VehicleInfo Vehicle;
 
 struct lua_State;
 class EventMgr;
-class ElunaObject;
-template<typename T> class ElunaTemplate;
+class ForgeObject;
+template<typename T> class ForgeTemplate;
 
 template<typename K> class BindingMap;
 template<typename T> struct EventKey;
@@ -128,25 +133,25 @@ enum MethodRegisterState
     METHOD_REG_ALL
 };
 
-#define ELUNA_STATE_PTR "Eluna State Ptr"
+#define FORGE_STATE_PTR "Forge State Ptr"
 
-#if defined ELUNA_TRINITY
-#define ELUNA_GAME_API TC_GAME_API
+#if defined FORGE_TRINITY
+#define FORGE_GAME_API TC_GAME_API
 #define TRACKABLE_PTR_NAMESPACE ::Trinity::
 #else
-#define ELUNA_GAME_API
-#if defined ELUNA_CMANGOS
+#define FORGE_GAME_API
+#if defined FORGE_CMANGOS
 #define TRACKABLE_PTR_NAMESPACE ::MaNGOS::
 #endif
 #endif
 
-class ELUNA_GAME_API Eluna
+class FORGE_GAME_API Forge
 {
 public:
     typedef std::list<LuaScript> ScriptList;
     typedef std::recursive_mutex LockType;
 
-    void ReloadEluna() { reload = true; }
+    void ReloadForge() { reload = true; }
     bool ExecuteCall(int params, int res);
 
 private:
@@ -171,7 +176,7 @@ private:
 
     Map* const boundMap;
 
-    // Whether or not Eluna is in compatibility mode. Used in some method wrappers.
+    // Whether or not Forge is in compatibility mode. Used in some method wrappers.
     bool compatibilityMode;
 
     // Map from instance ID -> Lua table ref
@@ -187,9 +192,9 @@ private:
     void InvalidateObjects();
 #endif
 
-    // Use ReloadEluna() to make eluna reload
-    // This is called on world update to reload eluna
-    void _ReloadEluna();
+    // Use ReloadForge() to make forge reload
+    // This is called on world update to reload forge
+    void _ReloadForge();
 
     // Some helpers for hooks to call event handlers.
     // The bodies of the templates are in HookHelpers.h, so if you want to use them you need to #include "HookHelpers.h".
@@ -238,7 +243,7 @@ public:
     lua_State* L;
     EventMgr* eventMgr;
 
-#if defined ELUNA_TRINITY
+#if defined FORGE_TRINITY
     QueryCallbackProcessor queryProcessor;
     QueryCallbackProcessor& GetQueryProcessor() { return queryProcessor; }
 #endif
@@ -268,15 +273,15 @@ public:
     static void Report(lua_State* _L);
 
     // Never returns nullptr
-    static Eluna* GetEluna(lua_State* L)
+    static Forge* GetForge(lua_State* L)
     {
-        lua_pushstring(L, ELUNA_STATE_PTR);
+        lua_pushstring(L, FORGE_STATE_PTR);
         lua_rawget(L, LUA_REGISTRYINDEX);
         ASSERT(lua_islightuserdata(L, -1));
-        Eluna* E = static_cast<Eluna*>(lua_touserdata(L, -1));
+        Forge* F = static_cast<Forge*>(lua_touserdata(L, -1));
         lua_pop(L, 1);
-        ASSERT(E);
-        return E;
+        ASSERT(F);
+        return F;
     }
 
     // can be used by anything, including methods.
@@ -301,11 +306,11 @@ public:
     template<typename T>
     void Push(T const* ptr)
     {
-        ElunaTemplate<T>::Push(this, ptr);
+        ForgeTemplate<T>::Push(this, ptr);
     }
 
     /*
-     * Returns `true` if Eluna has instance data for `map`.
+     * Returns `true` if Forge has instance data for `map`.
      */
     bool HasInstanceData(Map const* map);
 
@@ -319,14 +324,14 @@ public:
      * Retrieve the instance data for the `Map` scripted by `ai` and push it
      *   onto the stack.
      *
-     * An `ElunaInstanceAI` is needed because the instance data might
-     *   not exist (i.e. Eluna has been reloaded).
+     * An `ForgeInstanceAI` is needed because the instance data might
+     *   not exist (i.e. Forge has been reloaded).
      *
      * In that case, the AI is "reloaded" (new instance data table is created
      *   and loaded with the last known save state, and `Load`/`Initialize`
      *   hooks are called).
      */
-    void PushInstanceData(ElunaInstanceAI* ai, bool incrementCounter = true);
+    void PushInstanceData(ForgeInstanceAI* ai, bool incrementCounter = true);
 
     void RunScripts();
     bool HasLuaState() const { return L != NULL; }
@@ -334,7 +339,7 @@ public:
     uint64 GetCallstackId() const { return callstackid; }
 #endif
     int Register(uint8 reg, uint32 entry, ObjectGuid guid, uint32 instanceId, uint32 event_id, int functionRef, uint32 shots);
-    void UpdateEluna(uint32 diff);
+    void UpdateForge(uint32 diff);
 
     // Checks
     template<typename T> T CHECKVAL(int narg);
@@ -344,9 +349,9 @@ public:
     }
     template<typename T> T* CHECKOBJ(int narg, bool error = true)
     {
-        return ElunaTemplate<T>::Check(this, narg, error);
+        return ForgeTemplate<T>::Check(this, narg, error);
     }
-    ElunaObject* CHECKTYPE(int narg, const char* tname, bool error = true);
+    ForgeObject* CHECKTYPE(int narg, const char* tname, bool error = true);
 
     CreatureAI* GetAI(Creature* creature);
     InstanceData* GetInstanceData(Map* map);
@@ -372,12 +377,12 @@ public:
 
     bool GetCompatibilityMode() const { return compatibilityMode; }
 
-    Eluna(Map * map, bool compatMode = false);
-    ~Eluna();
+    Forge(Map * map, bool compatMode = false);
+    ~Forge();
 
     // Prevent copy
-    Eluna(Eluna const&) = delete;
-    Eluna& operator=(const Eluna&) = delete;
+    Forge(Forge const&) = delete;
+    Forge& operator=(const Forge&) = delete;
 
     /* Custom */
     void OnTimedEvent(int funcRef, uint32 delay, uint32 calls, WorldObject* obj);
@@ -457,7 +462,7 @@ public:
     bool OnQuestAccept(Player* pPlayer, GameObject* pGameObject, Quest const* pQuest);
     bool OnQuestReward(Player* pPlayer, GameObject* pGameObject, Quest const* pQuest, uint32 opt);
     void GetDialogStatus(const Player* pPlayer, const GameObject* pGameObject);
-#if ELUNA_EXPANSION >= EXP_WOTLK
+#if FORGE_EXPANSION >= EXP_WOTLK
     void OnDestroyed(GameObject* pGameObject, WorldObject* attacker);
     void OnDamaged(GameObject* pGameObject, WorldObject* attacker);
 #endif
@@ -485,7 +490,7 @@ public:
     void OnFreeTalentPointsChanged(Player* pPlayer, uint32 newPoints);
     void OnTalentsReset(Player* pPlayer, bool noCost);
     void OnMoneyChanged(Player* pPlayer, int32& amount);
-#if ELUNA_EXPANSION >= EXP_CATA
+#if FORGE_EXPANSION >= EXP_CATA
     void OnMoneyChanged(Player* pPlayer, int64& amount);
 #endif
     void OnGiveXP(Player* pPlayer, uint32& amount, Unit* pVictim);
@@ -513,7 +518,7 @@ public:
     void HandleGossipSelectOption(Player* pPlayer, uint32 menuId, uint32 sender, uint32 action, const std::string& code);
     void OnAchievementComplete(Player* pPlayer, uint32 achievementId);
 
-#if ELUNA_EXPANSION >= EXP_WOTLK
+#if FORGE_EXPANSION >= EXP_WOTLK
     /* Vehicle */
     void OnInstall(Vehicle* vehicle);
     void OnUninstall(Vehicle* vehicle);
@@ -543,7 +548,7 @@ public:
     void OnDisband(Guild* guild);
     void OnMemberWitdrawMoney(Guild* guild, Player* player, uint32& amount, bool isRepair);
     void OnMemberDepositMoney(Guild* guild, Player* player, uint32& amount);
-#if ELUNA_EXPANSION >= EXP_CATA
+#if FORGE_EXPANSION >= EXP_CATA
     void OnMemberWitdrawMoney(Guild* guild, Player* player, uint64& amount, bool isRepair);
     void OnMemberDepositMoney(Guild* guild, Player* player, uint64& amount);
 #endif
@@ -574,13 +579,13 @@ public:
     void OnRemove(GameObject* gameobject);
 
     /* Instance */
-    void OnInitialize(ElunaInstanceAI* ai);
-    void OnLoad(ElunaInstanceAI* ai);
-    void OnUpdateInstance(ElunaInstanceAI* ai, uint32 diff);
-    void OnPlayerEnterInstance(ElunaInstanceAI* ai, Player* player);
-    void OnCreatureCreate(ElunaInstanceAI* ai, Creature* creature);
-    void OnGameObjectCreate(ElunaInstanceAI* ai, GameObject* gameobject);
-    bool OnCheckEncounterInProgress(ElunaInstanceAI* ai);
+    void OnInitialize(ForgeInstanceAI* ai);
+    void OnLoad(ForgeInstanceAI* ai);
+    void OnUpdateInstance(ForgeInstanceAI* ai, uint32 diff);
+    void OnPlayerEnterInstance(ForgeInstanceAI* ai, Player* player);
+    void OnCreatureCreate(ForgeInstanceAI* ai, Creature* creature);
+    void OnGameObjectCreate(ForgeInstanceAI* ai, GameObject* gameobject);
+    bool OnCheckEncounterInProgress(ForgeInstanceAI* ai);
 
     /* World */
     void OnOpenStateChange(bool open);
@@ -601,9 +606,9 @@ public:
     /* Spell */
     void OnSpellCast(Spell* pSpell, bool skipCheck);
 };
-template<> Unit* Eluna::CHECKOBJ<Unit>(int narg, bool error);
-template<> Object* Eluna::CHECKOBJ<Object>(int narg, bool error);
-template<> WorldObject* Eluna::CHECKOBJ<WorldObject>(int narg, bool error);
-template<> ElunaObject* Eluna::CHECKOBJ<ElunaObject>(int narg, bool error);
+template<> Unit* Forge::CHECKOBJ<Unit>(int narg, bool error);
+template<> Object* Forge::CHECKOBJ<Object>(int narg, bool error);
+template<> WorldObject* Forge::CHECKOBJ<WorldObject>(int narg, bool error);
+template<> ForgeObject* Forge::CHECKOBJ<ForgeObject>(int narg, bool error);
 
 #endif

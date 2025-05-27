@@ -1,15 +1,20 @@
 /*
-* Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
-* This program is free software licensed under GPL version 3
-* Please see the included DOCS/LICENSE.md for more information
-*/
+ * Part of Forge <https://github.com/iThorgrim/Forge>, a standalone fork of Eluna Lua Engine.
+ * 
+ * Copyright (C) Forge contributors
+ * Based on Eluna <https://elunaluaengine.github.io/>
+ * Copyright (C) Eluna Lua Engine contributors
+ * 
+ * Licensed under the GNU GPL v3 only.
+ * See LICENSE file or <https://www.gnu.org/licenses/>.
+ */
 
 #include "Hooks.h"
 #include "HookHelpers.h"
 #include "LuaEngine.h"
 #include "BindingMap.h"
-#include "ElunaIncludes.h"
-#include "ElunaTemplate.h"
+#include "ForgeIncludes.h"
+#include "ForgeTemplate.h"
 
 using namespace Hooks;
 
@@ -23,10 +28,10 @@ using namespace Hooks;
     if (!BINDINGS->HasBindingsFor(key))\
         return RETVAL;
 
-bool Eluna::OnGossipHello(Player* pPlayer, GameObject* pGameObject)
+bool Forge::OnGossipHello(Player* pPlayer, GameObject* pGameObject)
 {
     START_HOOK_WITH_RETVAL(GameObjectGossipBindings, GOSSIP_EVENT_ON_HELLO, pGameObject->GetEntry(), false);
-#if defined ELUNA_CMANGOS && ELUNA_EXPANSION < EXP_CATA
+#if defined FORGE_CMANGOS && FORGE_EXPANSION < EXP_CATA
     pPlayer->GetPlayerMenu()->ClearMenus();
 #else
     pPlayer->PlayerTalkClass->ClearMenus();
@@ -36,10 +41,10 @@ bool Eluna::OnGossipHello(Player* pPlayer, GameObject* pGameObject)
     return CallAllFunctionsBool(GameObjectGossipBindings, key, true);
 }
 
-bool Eluna::OnGossipSelect(Player* pPlayer, GameObject* pGameObject, uint32 sender, uint32 action)
+bool Forge::OnGossipSelect(Player* pPlayer, GameObject* pGameObject, uint32 sender, uint32 action)
 {
     START_HOOK_WITH_RETVAL(GameObjectGossipBindings, GOSSIP_EVENT_ON_SELECT, pGameObject->GetEntry(), false);
-#if defined ELUNA_CMANGOS && ELUNA_EXPANSION < EXP_CATA
+#if defined FORGE_CMANGOS && FORGE_EXPANSION < EXP_CATA
     pPlayer->GetPlayerMenu()->ClearMenus();
 #else
     pPlayer->PlayerTalkClass->ClearMenus();
@@ -51,10 +56,10 @@ bool Eluna::OnGossipSelect(Player* pPlayer, GameObject* pGameObject, uint32 send
     return CallAllFunctionsBool(GameObjectGossipBindings, key, true);
 }
 
-bool Eluna::OnGossipSelectCode(Player* pPlayer, GameObject* pGameObject, uint32 sender, uint32 action, const char* code)
+bool Forge::OnGossipSelectCode(Player* pPlayer, GameObject* pGameObject, uint32 sender, uint32 action, const char* code)
 {
     START_HOOK_WITH_RETVAL(GameObjectGossipBindings, GOSSIP_EVENT_ON_SELECT, pGameObject->GetEntry(), false);
-#if defined ELUNA_CMANGOS && ELUNA_EXPANSION < EXP_CATA
+#if defined FORGE_CMANGOS && FORGE_EXPANSION < EXP_CATA
     pPlayer->GetPlayerMenu()->ClearMenus();
 #else
     pPlayer->PlayerTalkClass->ClearMenus();
@@ -67,10 +72,10 @@ bool Eluna::OnGossipSelectCode(Player* pPlayer, GameObject* pGameObject, uint32 
     return CallAllFunctionsBool(GameObjectGossipBindings, key, true);
 }
 
-void Eluna::HandleGossipSelectOption(Player* pPlayer, uint32 menuId, uint32 sender, uint32 action, const std::string& code)
+void Forge::HandleGossipSelectOption(Player* pPlayer, uint32 menuId, uint32 sender, uint32 action, const std::string& code)
 {
     START_HOOK(PlayerGossipBindings, GOSSIP_EVENT_ON_SELECT, menuId);
-#if defined ELUNA_CMANGOS && ELUNA_EXPANSION < EXP_CATA
+#if defined FORGE_CMANGOS && FORGE_EXPANSION < EXP_CATA
     pPlayer->GetPlayerMenu()->ClearMenus();
 #else
     pPlayer->PlayerTalkClass->ClearMenus();
@@ -88,10 +93,10 @@ void Eluna::HandleGossipSelectOption(Player* pPlayer, uint32 menuId, uint32 send
     CallAllFunctions(PlayerGossipBindings, key);
 }
 
-bool Eluna::OnItemGossip(Player* pPlayer, Item* pItem, SpellCastTargets const& /*targets*/)
+bool Forge::OnItemGossip(Player* pPlayer, Item* pItem, SpellCastTargets const& /*targets*/)
 {
     START_HOOK_WITH_RETVAL(ItemGossipBindings, GOSSIP_EVENT_ON_HELLO, pItem->GetEntry(), true);
-#if defined ELUNA_CMANGOS && ELUNA_EXPANSION < EXP_CATA
+#if defined FORGE_CMANGOS && FORGE_EXPANSION < EXP_CATA
     pPlayer->GetPlayerMenu()->ClearMenus();
 #else
     pPlayer->PlayerTalkClass->ClearMenus();
@@ -101,10 +106,10 @@ bool Eluna::OnItemGossip(Player* pPlayer, Item* pItem, SpellCastTargets const& /
     return CallAllFunctionsBool(ItemGossipBindings, key, true);
 }
 
-void Eluna::HandleGossipSelectOption(Player* pPlayer, Item* pItem, uint32 sender, uint32 action, const std::string& code)
+void Forge::HandleGossipSelectOption(Player* pPlayer, Item* pItem, uint32 sender, uint32 action, const std::string& code)
 {
     START_HOOK(ItemGossipBindings, GOSSIP_EVENT_ON_SELECT, pItem->GetEntry());
-#if defined ELUNA_CMANGOS && ELUNA_EXPANSION < EXP_CATA
+#if defined FORGE_CMANGOS && FORGE_EXPANSION < EXP_CATA
     pPlayer->GetPlayerMenu()->ClearMenus();
 #else
     pPlayer->PlayerTalkClass->ClearMenus();
@@ -122,10 +127,10 @@ void Eluna::HandleGossipSelectOption(Player* pPlayer, Item* pItem, uint32 sender
     CallAllFunctions(ItemGossipBindings, key);
 }
 
-bool Eluna::OnGossipHello(Player* pPlayer, Creature* pCreature)
+bool Forge::OnGossipHello(Player* pPlayer, Creature* pCreature)
 {
     START_HOOK_WITH_RETVAL(CreatureGossipBindings, GOSSIP_EVENT_ON_HELLO, pCreature->GetEntry(), false);
-#if defined ELUNA_CMANGOS && ELUNA_EXPANSION < EXP_CATA
+#if defined FORGE_CMANGOS && FORGE_EXPANSION < EXP_CATA
     pPlayer->GetPlayerMenu()->ClearMenus();
 #else
     pPlayer->PlayerTalkClass->ClearMenus();
@@ -135,10 +140,10 @@ bool Eluna::OnGossipHello(Player* pPlayer, Creature* pCreature)
     return CallAllFunctionsBool(CreatureGossipBindings, key, true);
 }
 
-bool Eluna::OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 sender, uint32 action)
+bool Forge::OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 sender, uint32 action)
 {
     START_HOOK_WITH_RETVAL(CreatureGossipBindings, GOSSIP_EVENT_ON_SELECT, pCreature->GetEntry(), false);
-#if defined ELUNA_CMANGOS && ELUNA_EXPANSION < EXP_CATA
+#if defined FORGE_CMANGOS && FORGE_EXPANSION < EXP_CATA
     auto original_menu = *pPlayer->GetPlayerMenu();
     pPlayer->GetPlayerMenu()->ClearMenus();
 #else
@@ -151,7 +156,7 @@ bool Eluna::OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 sender, 
     HookPush(action);
     auto preventDefault = CallAllFunctionsBool(CreatureGossipBindings, key, true);
     if (!preventDefault) {
-#if defined ELUNA_CMANGOS && ELUNA_EXPANSION < EXP_CATA
+#if defined FORGE_CMANGOS && FORGE_EXPANSION < EXP_CATA
         *pPlayer->GetPlayerMenu() = original_menu;
 #else
         *pPlayer->PlayerTalkClass = original_menu;
@@ -160,10 +165,10 @@ bool Eluna::OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 sender, 
     return preventDefault;
 }
 
-bool Eluna::OnGossipSelectCode(Player* pPlayer, Creature* pCreature, uint32 sender, uint32 action, const char* code)
+bool Forge::OnGossipSelectCode(Player* pPlayer, Creature* pCreature, uint32 sender, uint32 action, const char* code)
 {
     START_HOOK_WITH_RETVAL(CreatureGossipBindings, GOSSIP_EVENT_ON_SELECT, pCreature->GetEntry(), false);
-#if defined ELUNA_CMANGOS && ELUNA_EXPANSION < EXP_CATA
+#if defined FORGE_CMANGOS && FORGE_EXPANSION < EXP_CATA
     auto original_menu = *pPlayer->GetPlayerMenu();
     pPlayer->GetPlayerMenu()->ClearMenus();
 #else
@@ -177,7 +182,7 @@ bool Eluna::OnGossipSelectCode(Player* pPlayer, Creature* pCreature, uint32 send
     HookPush(code);
     auto preventDefault = CallAllFunctionsBool(CreatureGossipBindings, key, true);
     if (!preventDefault) {
-#if defined ELUNA_CMANGOS && ELUNA_EXPANSION < EXP_CATA
+#if defined FORGE_CMANGOS && FORGE_EXPANSION < EXP_CATA
         *pPlayer->GetPlayerMenu() = original_menu;
 #else
         *pPlayer->PlayerTalkClass = original_menu;

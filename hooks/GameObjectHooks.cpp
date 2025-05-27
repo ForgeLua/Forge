@@ -1,16 +1,21 @@
 /*
- * Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
- * This program is free software licensed under GPL version 3
- * Please see the included DOCS/LICENSE.md for more information
+ * Part of Forge <https://github.com/iThorgrim/Forge>, a standalone fork of Eluna Lua Engine.
+ * 
+ * Copyright (C) Forge contributors
+ * Based on Eluna <https://elunaluaengine.github.io/>
+ * Copyright (C) Eluna Lua Engine contributors
+ * 
+ * Licensed under the GNU GPL v3 only.
+ * See LICENSE file or <https://www.gnu.org/licenses/>.
  */
 
 #include "Hooks.h"
 #include "HookHelpers.h"
 #include "LuaEngine.h"
 #include "BindingMap.h"
-#include "ElunaIncludes.h"
-#include "ElunaEventMgr.h"
-#include "ElunaTemplate.h"
+#include "ForgeIncludes.h"
+#include "ForgeEventMgr.h"
+#include "ForgeTemplate.h"
 
 using namespace Hooks;
 
@@ -24,7 +29,7 @@ using namespace Hooks;
     if (!GameObjectEventBindings->HasBindingsFor(key))\
         return RETVAL;
 
-void Eluna::OnDummyEffect(WorldObject* pCaster, uint32 spellId, SpellEffIndex effIndex, GameObject* pTarget)
+void Forge::OnDummyEffect(WorldObject* pCaster, uint32 spellId, SpellEffIndex effIndex, GameObject* pTarget)
 {
     START_HOOK(GAMEOBJECT_EVENT_ON_DUMMY_EFFECT, pTarget->GetEntry());
     HookPush(pCaster);
@@ -34,7 +39,7 @@ void Eluna::OnDummyEffect(WorldObject* pCaster, uint32 spellId, SpellEffIndex ef
     CallAllFunctions(GameObjectEventBindings, key);
 }
 
-void Eluna::UpdateAI(GameObject* pGameObject, uint32 diff)
+void Forge::UpdateAI(GameObject* pGameObject, uint32 diff)
 {
     START_HOOK(GAMEOBJECT_EVENT_ON_AIUPDATE, pGameObject->GetEntry());
     HookPush(pGameObject);
@@ -42,7 +47,7 @@ void Eluna::UpdateAI(GameObject* pGameObject, uint32 diff)
     CallAllFunctions(GameObjectEventBindings, key);
 }
 
-bool Eluna::OnQuestAccept(Player* pPlayer, GameObject* pGameObject, Quest const* pQuest)
+bool Forge::OnQuestAccept(Player* pPlayer, GameObject* pGameObject, Quest const* pQuest)
 {
     START_HOOK_WITH_RETVAL(GAMEOBJECT_EVENT_ON_QUEST_ACCEPT, pGameObject->GetEntry(), false);
     HookPush(pPlayer);
@@ -51,7 +56,7 @@ bool Eluna::OnQuestAccept(Player* pPlayer, GameObject* pGameObject, Quest const*
     return CallAllFunctionsBool(GameObjectEventBindings, key);
 }
 
-bool Eluna::OnQuestReward(Player* pPlayer, GameObject* pGameObject, Quest const* pQuest, uint32 opt)
+bool Forge::OnQuestReward(Player* pPlayer, GameObject* pGameObject, Quest const* pQuest, uint32 opt)
 {
     START_HOOK_WITH_RETVAL(GAMEOBJECT_EVENT_ON_QUEST_REWARD, pGameObject->GetEntry(), false);
     HookPush(pPlayer);
@@ -61,7 +66,7 @@ bool Eluna::OnQuestReward(Player* pPlayer, GameObject* pGameObject, Quest const*
     return CallAllFunctionsBool(GameObjectEventBindings, key);
 }
 
-void Eluna::GetDialogStatus(const Player* pPlayer, const GameObject* pGameObject)
+void Forge::GetDialogStatus(const Player* pPlayer, const GameObject* pGameObject)
 {
     START_HOOK(GAMEOBJECT_EVENT_ON_DIALOG_STATUS, pGameObject->GetEntry());
     HookPush(pPlayer);
@@ -69,8 +74,8 @@ void Eluna::GetDialogStatus(const Player* pPlayer, const GameObject* pGameObject
     CallAllFunctions(GameObjectEventBindings, key);
 }
 
-#if ELUNA_EXPANSION >= EXP_WOTLK
-void Eluna::OnDestroyed(GameObject* pGameObject, WorldObject* attacker)
+#if FORGE_EXPANSION >= EXP_WOTLK
+void Forge::OnDestroyed(GameObject* pGameObject, WorldObject* attacker)
 {
     START_HOOK(GAMEOBJECT_EVENT_ON_DESTROYED, pGameObject->GetEntry());
     HookPush(pGameObject);
@@ -78,7 +83,7 @@ void Eluna::OnDestroyed(GameObject* pGameObject, WorldObject* attacker)
     CallAllFunctions(GameObjectEventBindings, key);
 }
 
-void Eluna::OnDamaged(GameObject* pGameObject, WorldObject* attacker)
+void Forge::OnDamaged(GameObject* pGameObject, WorldObject* attacker)
 {
     START_HOOK(GAMEOBJECT_EVENT_ON_DAMAGED, pGameObject->GetEntry());
     HookPush(pGameObject);
@@ -87,7 +92,7 @@ void Eluna::OnDamaged(GameObject* pGameObject, WorldObject* attacker)
 }
 #endif
 
-void Eluna::OnLootStateChanged(GameObject* pGameObject, uint32 state)
+void Forge::OnLootStateChanged(GameObject* pGameObject, uint32 state)
 {
     START_HOOK(GAMEOBJECT_EVENT_ON_LOOT_STATE_CHANGE, pGameObject->GetEntry());
     HookPush(pGameObject);
@@ -95,7 +100,7 @@ void Eluna::OnLootStateChanged(GameObject* pGameObject, uint32 state)
     CallAllFunctions(GameObjectEventBindings, key);
 }
 
-void Eluna::OnGameObjectStateChanged(GameObject* pGameObject, uint32 state)
+void Forge::OnGameObjectStateChanged(GameObject* pGameObject, uint32 state)
 {
     START_HOOK(GAMEOBJECT_EVENT_ON_GO_STATE_CHANGED, pGameObject->GetEntry());
     HookPush(pGameObject);
@@ -103,28 +108,28 @@ void Eluna::OnGameObjectStateChanged(GameObject* pGameObject, uint32 state)
     CallAllFunctions(GameObjectEventBindings, key);
 }
 
-void Eluna::OnSpawn(GameObject* pGameObject)
+void Forge::OnSpawn(GameObject* pGameObject)
 {
     START_HOOK(GAMEOBJECT_EVENT_ON_SPAWN, pGameObject->GetEntry());
     HookPush(pGameObject);
     CallAllFunctions(GameObjectEventBindings, key);
 }
 
-void Eluna::OnAddToWorld(GameObject* pGameObject)
+void Forge::OnAddToWorld(GameObject* pGameObject)
 {
     START_HOOK(GAMEOBJECT_EVENT_ON_ADD, pGameObject->GetEntry());
     HookPush(pGameObject);
     CallAllFunctions(GameObjectEventBindings, key);
 }
 
-void Eluna::OnRemoveFromWorld(GameObject* pGameObject)
+void Forge::OnRemoveFromWorld(GameObject* pGameObject)
 {
     START_HOOK(GAMEOBJECT_EVENT_ON_REMOVE, pGameObject->GetEntry());
     HookPush(pGameObject);
     CallAllFunctions(GameObjectEventBindings, key);
 }
 
-bool Eluna::OnGameObjectUse(Player* pPlayer, GameObject* pGameObject)
+bool Forge::OnGameObjectUse(Player* pPlayer, GameObject* pGameObject)
 {
     START_HOOK_WITH_RETVAL(GAMEOBJECT_EVENT_ON_USE, pGameObject->GetEntry(), false);
     HookPush(pGameObject);

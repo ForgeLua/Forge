@@ -1,16 +1,21 @@
 /*
- * Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
- * This program is free software licensed under GPL version 3
- * Please see the included DOCS/LICENSE.md for more information
+ * Part of Forge <https://github.com/iThorgrim/Forge>, a standalone fork of Eluna Lua Engine.
+ * 
+ * Copyright (C) Forge contributors
+ * Based on Eluna <https://elunaluaengine.github.io/>
+ * Copyright (C) Eluna Lua Engine contributors
+ * 
+ * Licensed under the GNU GPL v3 only.
+ * See LICENSE file or <https://www.gnu.org/licenses/>.
  */
 
 #include "Hooks.h"
 #include "HookHelpers.h"
 #include "LuaEngine.h"
 #include "BindingMap.h"
-#include "ElunaEventMgr.h"
-#include "ElunaIncludes.h"
-#include "ElunaTemplate.h"
+#include "ForgeEventMgr.h"
+#include "ForgeIncludes.h"
+#include "ForgeTemplate.h"
 
 using namespace Hooks;
 
@@ -24,7 +29,7 @@ using namespace Hooks;
     if (!ServerEventBindings->HasBindingsFor(key))\
         return RETVAL;
 
-bool Eluna::OnAddonMessage(Player* sender, uint32 type, std::string& msg, Player* receiver, Guild* guild, Group* group, Channel* channel)
+bool Forge::OnAddonMessage(Player* sender, uint32 type, std::string& msg, Player* receiver, Guild* guild, Group* group, Channel* channel)
 {
     START_HOOK_WITH_RETVAL(ADDON_EVENT_ON_MESSAGE, true);
     HookPush(sender);
@@ -58,7 +63,7 @@ bool Eluna::OnAddonMessage(Player* sender, uint32 type, std::string& msg, Player
     return CallAllFunctionsBool(ServerEventBindings, key, true);
 }
 
-void Eluna::OnTimedEvent(int funcRef, uint32 delay, uint32 calls, WorldObject* obj)
+void Forge::OnTimedEvent(int funcRef, uint32 delay, uint32 calls, WorldObject* obj)
 {
     ASSERT(!event_level);
 
@@ -80,38 +85,38 @@ void Eluna::OnTimedEvent(int funcRef, uint32 delay, uint32 calls, WorldObject* o
 #endif
 }
 
-void Eluna::OnGameEventStart(uint32 eventid)
+void Forge::OnGameEventStart(uint32 eventid)
 {
     START_HOOK(GAME_EVENT_START);
     HookPush(eventid);
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnGameEventStop(uint32 eventid)
+void Forge::OnGameEventStop(uint32 eventid)
 {
     START_HOOK(GAME_EVENT_STOP);
     HookPush(eventid);
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnLuaStateClose()
+void Forge::OnLuaStateClose()
 {
-    START_HOOK(ELUNA_EVENT_ON_LUA_STATE_CLOSE);
+    START_HOOK(FORGE_EVENT_ON_LUA_STATE_CLOSE);
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnLuaStateOpen()
+void Forge::OnLuaStateOpen()
 {
-    START_HOOK(ELUNA_EVENT_ON_LUA_STATE_OPEN);
+    START_HOOK(FORGE_EVENT_ON_LUA_STATE_OPEN);
     CallAllFunctions(ServerEventBindings, key);
 }
 
 // AreaTrigger
-bool Eluna::OnAreaTrigger(Player* pPlayer, AreaTriggerEntry const* pTrigger)
+bool Forge::OnAreaTrigger(Player* pPlayer, AreaTriggerEntry const* pTrigger)
 {
     START_HOOK_WITH_RETVAL(TRIGGER_EVENT_ON_TRIGGER, false);
     HookPush(pPlayer);
-#if defined ELUNA_TRINITY
+#if defined FORGE_TRINITY
     HookPush(pTrigger->ID);
 #else
     HookPush(pTrigger->id);
@@ -121,7 +126,7 @@ bool Eluna::OnAreaTrigger(Player* pPlayer, AreaTriggerEntry const* pTrigger)
 }
 
 // Weather
-void Eluna::OnChange(Weather* /*weather*/, uint32 zone, WeatherState state, float grade)
+void Forge::OnChange(Weather* /*weather*/, uint32 zone, WeatherState state, float grade)
 {
     START_HOOK(WEATHER_EVENT_ON_CHANGE);
     HookPush(zone);
@@ -131,11 +136,11 @@ void Eluna::OnChange(Weather* /*weather*/, uint32 zone, WeatherState state, floa
 }
 
 // Auction House
-void Eluna::OnAdd(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
+void Forge::OnAdd(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
 {
     Player* owner = eObjectAccessor()FindPlayer(MAKE_NEW_GUID(entry->owner, 0, HIGHGUID_PLAYER));
 
-#if defined ELUNA_TRINITY
+#if defined FORGE_TRINITY
     Item* item = eAuctionMgr->GetAItem(entry->itemGUIDLow);
     uint32 expiretime = entry->expire_time;
 #else
@@ -158,11 +163,11 @@ void Eluna::OnAdd(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnRemove(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
+void Forge::OnRemove(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
 {
     Player* owner = eObjectAccessor()FindPlayer(MAKE_NEW_GUID(entry->owner, 0, HIGHGUID_PLAYER));
 
-#if defined ELUNA_TRINITY
+#if defined FORGE_TRINITY
     Item* item = eAuctionMgr->GetAItem(entry->itemGUIDLow);
     uint32 expiretime = entry->expire_time;
 #else
@@ -186,11 +191,11 @@ void Eluna::OnRemove(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnSuccessful(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
+void Forge::OnSuccessful(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
 {
     Player* owner = eObjectAccessor()FindPlayer(MAKE_NEW_GUID(entry->owner, 0, HIGHGUID_PLAYER));
 
-#if defined ELUNA_TRINITY
+#if defined FORGE_TRINITY
     Item* item = eAuctionMgr->GetAItem(entry->itemGUIDLow);
     uint32 expiretime = entry->expire_time;
 #else
@@ -213,11 +218,11 @@ void Eluna::OnSuccessful(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnExpire(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
+void Forge::OnExpire(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
 {
     Player* owner = eObjectAccessor()FindPlayer(MAKE_NEW_GUID(entry->owner, 0, HIGHGUID_PLAYER));
 
-#if defined ELUNA_TRINITY
+#if defined FORGE_TRINITY
     Item* item = eAuctionMgr->GetAItem(entry->itemGUIDLow);
     uint32 expiretime = entry->expire_time;
 #else
@@ -240,21 +245,21 @@ void Eluna::OnExpire(AuctionHouseObject* /*ah*/, AuctionEntry* entry)
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnOpenStateChange(bool open)
+void Forge::OnOpenStateChange(bool open)
 {
     START_HOOK(WORLD_EVENT_ON_OPEN_STATE_CHANGE);
     HookPush(open);
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnConfigLoad(bool reload)
+void Forge::OnConfigLoad(bool reload)
 {
     START_HOOK(WORLD_EVENT_ON_CONFIG_LOAD);
     HookPush(reload);
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnShutdownInitiate(ShutdownExitCode code, ShutdownMask mask)
+void Forge::OnShutdownInitiate(ShutdownExitCode code, ShutdownMask mask)
 {
     START_HOOK(WORLD_EVENT_ON_SHUTDOWN_INIT);
     HookPush(code);
@@ -262,47 +267,47 @@ void Eluna::OnShutdownInitiate(ShutdownExitCode code, ShutdownMask mask)
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnShutdownCancel()
+void Forge::OnShutdownCancel()
 {
     START_HOOK(WORLD_EVENT_ON_SHUTDOWN_CANCEL);
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnWorldUpdate(uint32 diff)
+void Forge::OnWorldUpdate(uint32 diff)
 {
     START_HOOK(WORLD_EVENT_ON_UPDATE);
     HookPush(diff);
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnStartup()
+void Forge::OnStartup()
 {
     START_HOOK(WORLD_EVENT_ON_STARTUP);
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnShutdown()
+void Forge::OnShutdown()
 {
     START_HOOK(WORLD_EVENT_ON_SHUTDOWN);
     CallAllFunctions(ServerEventBindings, key);
 }
 
 /* Map */
-void Eluna::OnCreate(Map* map)
+void Forge::OnCreate(Map* map)
 {
     START_HOOK(MAP_EVENT_ON_CREATE);
     HookPush(map);
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnDestroy(Map* map)
+void Forge::OnDestroy(Map* map)
 {
     START_HOOK(MAP_EVENT_ON_DESTROY);
     HookPush(map);
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnPlayerEnter(Map* map, Player* player)
+void Forge::OnPlayerEnter(Map* map, Player* player)
 {
     START_HOOK(MAP_EVENT_ON_PLAYER_ENTER);
     HookPush(map);
@@ -310,7 +315,7 @@ void Eluna::OnPlayerEnter(Map* map, Player* player)
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnPlayerLeave(Map* map, Player* player)
+void Forge::OnPlayerLeave(Map* map, Player* player)
 {
     START_HOOK(MAP_EVENT_ON_PLAYER_LEAVE);
     HookPush(map);
@@ -318,7 +323,7 @@ void Eluna::OnPlayerLeave(Map* map, Player* player)
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnUpdate(Map* map, uint32 diff)
+void Forge::OnUpdate(Map* map, uint32 diff)
 {
     START_HOOK(MAP_EVENT_ON_UPDATE);
     HookPush(map);
@@ -326,14 +331,14 @@ void Eluna::OnUpdate(Map* map, uint32 diff)
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnRemove(GameObject* gameobject)
+void Forge::OnRemove(GameObject* gameobject)
 {
     START_HOOK(WORLD_EVENT_ON_DELETE_GAMEOBJECT);
     HookPush(gameobject);
     CallAllFunctions(ServerEventBindings, key);
 }
 
-void Eluna::OnRemove(Creature* creature)
+void Forge::OnRemove(Creature* creature)
 {
     START_HOOK(WORLD_EVENT_ON_DELETE_CREATURE);
     HookPush(creature);

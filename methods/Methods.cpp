@@ -1,15 +1,20 @@
 /*
-* Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
-* This program is free software licensed under GPL version 3
-* Please see the included DOCS/LICENSE.md for more information
-*/
+ * Part of Forge <https://github.com/iThorgrim/Forge>, a standalone fork of Eluna Lua Engine.
+ * 
+ * Copyright (C) Forge contributors
+ * Based on Eluna <https://elunaluaengine.github.io/>
+ * Copyright (C) Eluna Lua Engine contributors
+ * 
+ * Licensed under the GNU GPL v3 only.
+ * See LICENSE file or <https://www.gnu.org/licenses/>.
+ */
 
-// Eluna
+// Forge
 #include "LuaEngine.h"
-#include "ElunaEventMgr.h"
-#include "ElunaIncludes.h"
-#include "ElunaTemplate.h"
-#include "ElunaUtility.h"
+#include "ForgeEventMgr.h"
+#include "ForgeIncludes.h"
+#include "ForgeTemplate.h"
+#include "ForgeUtility.h"
 
 // Method includes
 #include "GlobalMethods.h"
@@ -21,7 +26,7 @@
 #include "GroupMethods.h"
 #include "GuildMethods.h"
 #include "GameObjectMethods.h"
-#include "ElunaQueryMethods.h"
+#include "ForgeQueryMethods.h"
 #include "AuraMethods.h"
 #include "ItemMethods.h"
 #include "WorldPacketMethods.h"
@@ -35,88 +40,88 @@
 // Custom methods
 #include "CustomMethods.h"
 
-void RegisterMethods(Eluna* E)
+void RegisterMethods(Forge* F)
 {
-    ElunaTemplate<>::SetMethods(E, LuaGlobalFunctions::GlobalMethods);
+    ForgeTemplate<>::SetMethods(F, LuaGlobalFunctions::GlobalMethods);
 
-    ElunaTemplate<Object>::Register(E, "Object");
-    ElunaTemplate<Object>::SetMethods(E, LuaObject::ObjectMethods);
+    ForgeTemplate<Object>::Register(F, "Object");
+    ForgeTemplate<Object>::SetMethods(F, LuaObject::ObjectMethods);
 
-    ElunaTemplate<WorldObject>::Register(E, "WorldObject");
-    ElunaTemplate<WorldObject>::SetMethods(E, LuaObject::ObjectMethods);
-    ElunaTemplate<WorldObject>::SetMethods(E, LuaWorldObject::WorldObjectMethods);
+    ForgeTemplate<WorldObject>::Register(F, "WorldObject");
+    ForgeTemplate<WorldObject>::SetMethods(F, LuaObject::ObjectMethods);
+    ForgeTemplate<WorldObject>::SetMethods(F, LuaWorldObject::WorldObjectMethods);
 
-    ElunaTemplate<Unit>::Register(E, "Unit");
-    ElunaTemplate<Unit>::SetMethods(E, LuaObject::ObjectMethods);
-    ElunaTemplate<Unit>::SetMethods(E, LuaWorldObject::WorldObjectMethods);
-    ElunaTemplate<Unit>::SetMethods(E, LuaUnit::UnitMethods);
+    ForgeTemplate<Unit>::Register(F, "Unit");
+    ForgeTemplate<Unit>::SetMethods(F, LuaObject::ObjectMethods);
+    ForgeTemplate<Unit>::SetMethods(F, LuaWorldObject::WorldObjectMethods);
+    ForgeTemplate<Unit>::SetMethods(F, LuaUnit::UnitMethods);
 
-    ElunaTemplate<Player>::Register(E, "Player");
-    ElunaTemplate<Player>::SetMethods(E, LuaObject::ObjectMethods);
-    ElunaTemplate<Player>::SetMethods(E, LuaWorldObject::WorldObjectMethods);
-    ElunaTemplate<Player>::SetMethods(E, LuaUnit::UnitMethods);
-    ElunaTemplate<Player>::SetMethods(E, LuaPlayer::PlayerMethods);
+    ForgeTemplate<Player>::Register(F, "Player");
+    ForgeTemplate<Player>::SetMethods(F, LuaObject::ObjectMethods);
+    ForgeTemplate<Player>::SetMethods(F, LuaWorldObject::WorldObjectMethods);
+    ForgeTemplate<Player>::SetMethods(F, LuaUnit::UnitMethods);
+    ForgeTemplate<Player>::SetMethods(F, LuaPlayer::PlayerMethods);
 
-    ElunaTemplate<Creature>::Register(E, "Creature");
-    ElunaTemplate<Creature>::SetMethods(E, LuaObject::ObjectMethods);
-    ElunaTemplate<Creature>::SetMethods(E, LuaWorldObject::WorldObjectMethods);
-    ElunaTemplate<Creature>::SetMethods(E, LuaUnit::UnitMethods);
-    ElunaTemplate<Creature>::SetMethods(E, LuaCreature::CreatureMethods);
+    ForgeTemplate<Creature>::Register(F, "Creature");
+    ForgeTemplate<Creature>::SetMethods(F, LuaObject::ObjectMethods);
+    ForgeTemplate<Creature>::SetMethods(F, LuaWorldObject::WorldObjectMethods);
+    ForgeTemplate<Creature>::SetMethods(F, LuaUnit::UnitMethods);
+    ForgeTemplate<Creature>::SetMethods(F, LuaCreature::CreatureMethods);
 
-    ElunaTemplate<GameObject>::Register(E, "GameObject");
-    ElunaTemplate<GameObject>::SetMethods(E, LuaObject::ObjectMethods);
-    ElunaTemplate<GameObject>::SetMethods(E, LuaWorldObject::WorldObjectMethods);
-    ElunaTemplate<GameObject>::SetMethods(E, LuaGameObject::GameObjectMethods);
+    ForgeTemplate<GameObject>::Register(F, "GameObject");
+    ForgeTemplate<GameObject>::SetMethods(F, LuaObject::ObjectMethods);
+    ForgeTemplate<GameObject>::SetMethods(F, LuaWorldObject::WorldObjectMethods);
+    ForgeTemplate<GameObject>::SetMethods(F, LuaGameObject::GameObjectMethods);
 
-    ElunaTemplate<Corpse>::Register(E, "Corpse");
-    ElunaTemplate<Corpse>::SetMethods(E, LuaObject::ObjectMethods);
-    ElunaTemplate<Corpse>::SetMethods(E, LuaWorldObject::WorldObjectMethods);
-    ElunaTemplate<Corpse>::SetMethods(E, LuaCorpse::CorpseMethods);
+    ForgeTemplate<Corpse>::Register(F, "Corpse");
+    ForgeTemplate<Corpse>::SetMethods(F, LuaObject::ObjectMethods);
+    ForgeTemplate<Corpse>::SetMethods(F, LuaWorldObject::WorldObjectMethods);
+    ForgeTemplate<Corpse>::SetMethods(F, LuaCorpse::CorpseMethods);
 
-    ElunaTemplate<Item>::Register(E, "Item");
-    ElunaTemplate<Item>::SetMethods(E, LuaObject::ObjectMethods);
-    ElunaTemplate<Item>::SetMethods(E, LuaItem::ItemMethods);
+    ForgeTemplate<Item>::Register(F, "Item");
+    ForgeTemplate<Item>::SetMethods(F, LuaObject::ObjectMethods);
+    ForgeTemplate<Item>::SetMethods(F, LuaItem::ItemMethods);
 
-#if ELUNA_EXPANSION >= EXP_WOTLK
-    ElunaTemplate<Vehicle>::Register(E, "Vehicle");
-    ElunaTemplate<Vehicle>::SetMethods(E, LuaVehicle::VehicleMethods);
+#if FORGE_EXPANSION >= EXP_WOTLK
+    ForgeTemplate<Vehicle>::Register(F, "Vehicle");
+    ForgeTemplate<Vehicle>::SetMethods(F, LuaVehicle::VehicleMethods);
 #endif
 
-    ElunaTemplate<Group>::Register(E, "Group");
-    ElunaTemplate<Group>::SetMethods(E, LuaGroup::GroupMethods);
+    ForgeTemplate<Group>::Register(F, "Group");
+    ForgeTemplate<Group>::SetMethods(F, LuaGroup::GroupMethods);
 
-    ElunaTemplate<Guild>::Register(E, "Guild");
-    ElunaTemplate<Guild>::SetMethods(E, LuaGuild::GuildMethods);
+    ForgeTemplate<Guild>::Register(F, "Guild");
+    ForgeTemplate<Guild>::SetMethods(F, LuaGuild::GuildMethods);
 
-    ElunaTemplate<Aura>::Register(E, "Aura");
-    ElunaTemplate<Aura>::SetMethods(E, LuaAura::AuraMethods);
+    ForgeTemplate<Aura>::Register(F, "Aura");
+    ForgeTemplate<Aura>::SetMethods(F, LuaAura::AuraMethods);
 
-    ElunaTemplate<Spell>::Register(E, "Spell");
-    ElunaTemplate<Spell>::SetMethods(E, LuaSpell::SpellMethods);
+    ForgeTemplate<Spell>::Register(F, "Spell");
+    ForgeTemplate<Spell>::SetMethods(F, LuaSpell::SpellMethods);
 
-    ElunaTemplate<Quest>::Register(E, "Quest");
-    ElunaTemplate<Quest>::SetMethods(E, LuaQuest::QuestMethods);
+    ForgeTemplate<Quest>::Register(F, "Quest");
+    ForgeTemplate<Quest>::SetMethods(F, LuaQuest::QuestMethods);
 
-    ElunaTemplate<Map>::Register(E, "Map");
-    ElunaTemplate<Map>::SetMethods(E, LuaMap::MapMethods);
+    ForgeTemplate<Map>::Register(F, "Map");
+    ForgeTemplate<Map>::SetMethods(F, LuaMap::MapMethods);
 
-    ElunaTemplate<BattleGround>::Register(E, "BattleGround");
-    ElunaTemplate<BattleGround>::SetMethods(E, LuaBattleGround::BattleGroundMethods);
+    ForgeTemplate<BattleGround>::Register(F, "BattleGround");
+    ForgeTemplate<BattleGround>::SetMethods(F, LuaBattleGround::BattleGroundMethods);
 
-    ElunaTemplate<WorldPacket>::Register(E, "WorldPacket");
-    ElunaTemplate<WorldPacket>::SetMethods(E, LuaPacket::PacketMethods);
+    ForgeTemplate<WorldPacket>::Register(F, "WorldPacket");
+    ForgeTemplate<WorldPacket>::SetMethods(F, LuaPacket::PacketMethods);
 
-    ElunaTemplate<ElunaQuery>::Register(E, "ElunaQuery");
-    ElunaTemplate<ElunaQuery>::SetMethods(E, LuaQuery::QueryMethods);
+    ForgeTemplate<ForgeQuery>::Register(F, "ForgeQuery");
+    ForgeTemplate<ForgeQuery>::SetMethods(F, LuaQuery::QueryMethods);
 
-    ElunaTemplate<long long>::Register(E, "long long");
+    ForgeTemplate<long long>::Register(F, "long long");
 
-    ElunaTemplate<unsigned long long>::Register(E, "unsigned long long");
+    ForgeTemplate<unsigned long long>::Register(F, "unsigned long long");
 
-    ElunaTemplate<ObjectGuid>::Register(E, "ObjectGuid");
+    ForgeTemplate<ObjectGuid>::Register(F, "ObjectGuid");
 
     // Register custom methods
-    LuaCustom::RegisterCustomMethods(E);
+    LuaCustom::RegisterCustomMethods(F);
 
-    LuaVal::Register(E->L);
+    LuaVal::Register(F->L);
 }

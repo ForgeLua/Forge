@@ -1,7 +1,7 @@
 /*
  * lmarshal.c
  * A Lua library for serializing and deserializing Lua values
- * Richard Hundt <richardhundt@gmail.com>, Eluna Lua Engine <https://elunaluaengine.github.io/>
+ * Richard Hundt <richardhundt@gmail.com>, Forge Lua Engine <https://forgeluaengine.github.io/>
  *
  * License: MIT
  *
@@ -32,7 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cstdint>
-#include "ElunaCompat.h"
+#include "ForgeCompat.h"
 
 extern "C" {
 #include "lua.h"

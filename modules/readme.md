@@ -58,7 +58,7 @@ MODULEAPI luaopen_example_module(lua_State* L) {
     // register the example module and its function list in the global namespace
     luaL_register(L, "example_module", functions);
 
-    // run the Unload function on ELUNA_EVENT_ON_LUA_STATE_CLOSE
+    // run the Unload function on FORGE_EVENT_ON_LUA_STATE_CLOSE
     if (luaL_loadstring(L, "RegisterServerEvent(16, example_module.unload)") != 0)
         return lua_error(L);
     lua_call(L, 0, 0);

@@ -45,7 +45,7 @@ foreach(dir ${modules_list})
         endif()
       endif()
       
-      message(STATUS "Added Eluna custom module: ${dir}")
+      message(STATUS "Added Forge custom module: ${dir}")
     endif()
     
     # Append to lists

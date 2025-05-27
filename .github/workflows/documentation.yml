@@ -20,7 +20,7 @@ jobs:
       - name: Compile documentation
         run: |
           cd ${{ github.workspace }}/docs/
-          python -m ElunaDoc
+          python -m ForgeDoc
       - name: Create pull request
         run: |
           chmod +x "${GITHUB_WORKSPACE}/.github/workflows/create-pr.sh"
@@ -28,11 +28,11 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
           SOURCE_FOLDER: '${{ github.workspace }}/docs/build'
-          DESTINATION_REPO: 'elunaluaengine/elunaluaengine.github.io'
+          DESTINATION_REPO: 'forgeluaengine/forgeluaengine.github.io'
           DESTINATION_FOLDER: ''
           DESTINATION_BASE_BRANCH: 'master'
           DESTINATION_HEAD_BRANCH: 'master'
-          PR_TITLE: 'Update Eluna documentation'
-          COMMIT_MESSAGE: 'Update Eluna documentation'
-          USER_EMAIL: 'foe@elunatech.com'
+          PR_TITLE: 'Update Forge documentation'
+          COMMIT_MESSAGE: 'Update Forge documentation'
+          USER_EMAIL: 'foe@forgetech.com'
           USER_NAME: 'Foereaper'

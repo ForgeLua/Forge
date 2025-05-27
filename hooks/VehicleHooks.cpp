@@ -1,16 +1,21 @@
 /*
- * Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
- * This program is free software licensed under GPL version 3
- * Please see the included DOCS/LICENSE.md for more information
+ * Part of Forge <https://github.com/iThorgrim/Forge>, a standalone fork of Eluna Lua Engine.
+ * 
+ * Copyright (C) Forge contributors
+ * Based on Eluna <https://elunaluaengine.github.io/>
+ * Copyright (C) Eluna Lua Engine contributors
+ * 
+ * Licensed under the GNU GPL v3 only.
+ * See LICENSE file or <https://www.gnu.org/licenses/>.
  */
 
 #include "Hooks.h"
 #include "HookHelpers.h"
 #include "LuaEngine.h"
 #include "BindingMap.h"
-#include "ElunaTemplate.h"
+#include "ForgeTemplate.h"
 
-#if ELUNA_EXPANSION >= EXP_WOTLK
+#if FORGE_EXPANSION >= EXP_WOTLK
 
 using namespace Hooks;
 
@@ -19,21 +24,21 @@ using namespace Hooks;
     if (!VehicleEventBindings->HasBindingsFor(key))\
         return;
 
-void Eluna::OnInstall(Vehicle* vehicle)
+void Forge::OnInstall(Vehicle* vehicle)
 {
     START_HOOK(VEHICLE_EVENT_ON_INSTALL);
     HookPush(vehicle);
     CallAllFunctions(VehicleEventBindings, key);
 }
 
-void Eluna::OnUninstall(Vehicle* vehicle)
+void Forge::OnUninstall(Vehicle* vehicle)
 {
     START_HOOK(VEHICLE_EVENT_ON_UNINSTALL);
     HookPush(vehicle);
     CallAllFunctions(VehicleEventBindings, key);
 }
 
-void Eluna::OnInstallAccessory(Vehicle* vehicle, Creature* accessory)
+void Forge::OnInstallAccessory(Vehicle* vehicle, Creature* accessory)
 {
     START_HOOK(VEHICLE_EVENT_ON_INSTALL_ACCESSORY);
     HookPush(vehicle);
@@ -41,7 +46,7 @@ void Eluna::OnInstallAccessory(Vehicle* vehicle, Creature* accessory)
     CallAllFunctions(VehicleEventBindings, key);
 }
 
-void Eluna::OnAddPassenger(Vehicle* vehicle, Unit* passenger, int8 seatId)
+void Forge::OnAddPassenger(Vehicle* vehicle, Unit* passenger, int8 seatId)
 {
     START_HOOK(VEHICLE_EVENT_ON_ADD_PASSENGER);
     HookPush(vehicle);
@@ -50,7 +55,7 @@ void Eluna::OnAddPassenger(Vehicle* vehicle, Unit* passenger, int8 seatId)
     CallAllFunctions(VehicleEventBindings, key);
 }
 
-void Eluna::OnRemovePassenger(Vehicle* vehicle, Unit* passenger)
+void Forge::OnRemovePassenger(Vehicle* vehicle, Unit* passenger)
 {
     START_HOOK(VEHICLE_EVENT_ON_REMOVE_PASSENGER);
     HookPush(vehicle);

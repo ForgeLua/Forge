@@ -1,15 +1,20 @@
 /*
- * Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
- * This program is free software licensed under GPL version 3
- * Please see the included DOCS/LICENSE.md for more information
+ * Part of Forge <https://github.com/iThorgrim/Forge>, a standalone fork of Eluna Lua Engine.
+ * 
+ * Copyright (C) Forge contributors
+ * Based on Eluna <https://elunaluaengine.github.io/>
+ * Copyright (C) Eluna Lua Engine contributors
+ * 
+ * Licensed under the GNU GPL v3 only.
+ * See LICENSE file or <https://www.gnu.org/licenses/>.
  */
 
 #include "Hooks.h"
 #include "HookHelpers.h"
 #include "LuaEngine.h"
 #include "BindingMap.h"
-#include "ElunaIncludes.h"
-#include "ElunaTemplate.h"
+#include "ForgeIncludes.h"
+#include "ForgeTemplate.h"
 
 using namespace Hooks;
 
@@ -23,7 +28,7 @@ using namespace Hooks;
     if (!SpellEventBindings->HasBindingsFor(key))\
         return RETVAL;
 
-void Eluna::OnSpellCast(Spell* pSpell, bool skipCheck)
+void Forge::OnSpellCast(Spell* pSpell, bool skipCheck)
 {
     START_HOOK(SPELL_EVENT_ON_CAST, pSpell);
     HookPush(pSpell);

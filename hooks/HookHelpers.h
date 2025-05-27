@@ -1,14 +1,19 @@
 /*
- * Copyright (C) 2010 - 2024 Eluna Lua Engine <https://elunaluaengine.github.io/>
- * This program is free software licensed under GPL version 3
- * Please see the included DOCS/LICENSE.md for more information
+ * Part of Forge <https://github.com/iThorgrim/Forge>, a standalone fork of Eluna Lua Engine.
+ * 
+ * Copyright (C) Forge contributors
+ * Based on Eluna <https://elunaluaengine.github.io/>
+ * Copyright (C) Eluna Lua Engine contributors
+ * 
+ * Licensed under the GNU GPL v3 only.
+ * See LICENSE file or <https://www.gnu.org/licenses/>.
  */
 
 #ifndef _HOOK_HELPERS_H
 #define _HOOK_HELPERS_H
 
 #include "LuaEngine.h"
-#include "ElunaUtility.h"
+#include "ForgeUtility.h"
 
 /*
  * Sets up the stack so that event handlers can be called.
@@ -16,7 +21,7 @@
  * Returns the number of functions that were pushed onto the stack.
  */
 template<typename K1, typename K2>
-int Eluna::SetupStack(BindingMap<K1>* bindings1, BindingMap<K2>* bindings2, const K1& key1, const K2& key2, int number_of_arguments)
+int Forge::SetupStack(BindingMap<K1>* bindings1, BindingMap<K2>* bindings2, const K1& key1, const K2& key2, int number_of_arguments)
 {
     ASSERT(number_of_arguments == this->push_counter);
     ASSERT(key1.event_id == key2.event_id);
@@ -47,7 +52,7 @@ int Eluna::SetupStack(BindingMap<K1>* bindings1, BindingMap<K2>* bindings2, cons
  * Replace one of the arguments pushed before `SetupStack` with a new value.
  */
 template<typename T>
-void Eluna::ReplaceArgument(T value, uint8 index)
+void Forge::ReplaceArgument(T value, uint8 index)
 {
     ASSERT(index < lua_gettop(L) && index > 0);
     // Stack: event_id, [arguments], [functions], [results]
@@ -63,7 +68,7 @@ void Eluna::ReplaceArgument(T value, uint8 index)
  * Call all event handlers registered to the event ID/entry combination and ignore any results.
  */
 template<typename K1, typename K2>
-void Eluna::CallAllFunctions(BindingMap<K1>* bindings1, BindingMap<K2>* bindings2, const K1& key1, const K2& key2)
+void Forge::CallAllFunctions(BindingMap<K1>* bindings1, BindingMap<K2>* bindings2, const K1& key1, const K2& key2)
 {
     int number_of_arguments = this->push_counter;
     // Stack: [arguments]
@@ -89,7 +94,7 @@ void Eluna::CallAllFunctions(BindingMap<K1>* bindings1, BindingMap<K2>* bindings
  *   otherwise returns the opposite of `default_value`.
  */
 template<typename K1, typename K2>
-bool Eluna::CallAllFunctionsBool(BindingMap<K1>* bindings1, BindingMap<K2>* bindings2, const K1& key1, const K2& key2, bool default_value/* = false*/)
+bool Forge::CallAllFunctionsBool(BindingMap<K1>* bindings1, BindingMap<K2>* bindings2, const K1& key1, const K2& key2, bool default_value/* = false*/)
 {
     bool result = default_value;
     // Note: number_of_arguments here does not count in eventID, which is pushed in SetupStack
