@@ -57,3 +57,6 @@ Forge is designed for the WotLK branch of TrinityCore:
 ---
 
 Forge Lua Engine is licensed under **GPL v3**. Many thanks to the Eluna Lua Engine team and the TrinityCore community.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/42465ea8-a0af-442c-83c8-a0f162b029f5" alt="Forge Lua Engine Animated Logo"/>
+</p>
