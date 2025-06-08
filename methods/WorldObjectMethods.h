@@ -734,7 +734,6 @@ namespace LuaWorldObject
      *     worldobject:RegisterEvent(Timed, 1000, 5) -- do it after 1 second 5 times
      *     worldobject:RegisterEvent(Timed, {1000, 10000}, 0) -- do it after 1 to 10 seconds forever
      *
-     * In multistate, this method is only available in the MAP states
      * 
      * @proto eventId = (function, delay)
      * @proto eventId = (function, delaytable)
@@ -772,7 +771,7 @@ namespace LuaWorldObject
         int functionRef = luaL_ref(F->L, LUA_REGISTRYINDEX);
         if (functionRef != LUA_REFNIL && functionRef != LUA_NOREF)
         {
-            obj->forgeEvents->AddEvent(functionRef, min, max, repeats);
+            obj->GetForgeEvents(F->GetBoundMapId())->AddEvent(functionRef, min, max, repeats);
             F->Push(functionRef);
         }
         return 1;
@@ -781,26 +780,24 @@ namespace LuaWorldObject
     /**
      * Removes the timed event from a [WorldObject] by the specified event ID
      *
-     * In multistate, this method is only available in the MAP states
      *
      * @param int eventId : event Id to remove
      */
     int RemoveEventById(Forge* F, WorldObject* obj)
     {
         int eventId = F->CHECKVAL<int>(2);
-        obj->forgeEvents->SetState(eventId, LUAEVENT_STATE_ABORT);
+        obj->GetForgeEvents(F->GetBoundMapId())->SetState(eventId, LUAEVENT_STATE_ABORT);
         return 0;
     }
 
     /**
      * Removes all timed events from a [WorldObject]
      *
-     * In multistate, this method is only available in the MAP states
      *
      */
-    int RemoveEvents(Forge* /*E*/, WorldObject* obj)
+    int RemoveEvents(Forge* F, WorldObject* obj)
     {
-        obj->forgeEvents->SetStates(LUAEVENT_STATE_ABORT);
+        obj->GetForgeEvents(F->GetBoundMapId())->SetStates(LUAEVENT_STATE_ABORT);
         return 0;
     }
 
@@ -1183,9 +1180,9 @@ namespace LuaWorldObject
         { "SummonGameObject", &LuaWorldObject::SummonGameObject },
         { "SpawnCreature", &LuaWorldObject::SpawnCreature },
         { "SendPacket", &LuaWorldObject::SendPacket },
-        { "RegisterEvent", &LuaWorldObject::RegisterEvent, METHOD_REG_MAP }, // Map state method only in multistate
-        { "RemoveEventById", &LuaWorldObject::RemoveEventById, METHOD_REG_MAP }, // Map state method only in multistate
-        { "RemoveEvents", &LuaWorldObject::RemoveEvents, METHOD_REG_MAP }, // Map state method only in multistate
+        { "RegisterEvent", &LuaWorldObject::RegisterEvent },
+        { "RemoveEventById", &LuaWorldObject::RemoveEventById },
+        { "RemoveEvents", &LuaWorldObject::RemoveEvents },
         { "PlayMusic", &LuaWorldObject::PlayMusic },
         { "PlayDirectSound", &LuaWorldObject::PlayDirectSound },
         { "PlayDistanceSound", &LuaWorldObject::PlayDistanceSound },
