@@ -151,7 +151,6 @@ void ForgeLoader::LoadScripts()
 
 int ForgeLoader::LoadBytecodeChunk(lua_State* /*L*/, uint8* bytes, size_t len, BytecodeBuffer* buffer)
 {
-    buffer->reserve(buffer->size() + len);
     buffer->insert(buffer->end(), bytes, bytes + len);
 
     return 0;
@@ -217,7 +216,8 @@ void ForgeLoader::ReadFiles(lua_State* L, std::string path)
 
                 // was file, try add
                 std::string filename = dir_iter->path().filename().generic_string();
-                ProcessScript(L, filename, fullpath, mapId);
+                size_t filesize = fs::file_size(dir_iter->path());
+                ProcessScript(L, filename, filesize, fullpath, mapId);
             }
         }
     }
@@ -258,7 +258,7 @@ bool ForgeLoader::CompileScript(lua_State* L, LuaScript& script)
     return true;
 }
 
-void ForgeLoader::ProcessScript(lua_State* L, std::string filename, const std::string& fullpath, int32 mapId)
+void ForgeLoader::ProcessScript(lua_State* L, std::string filename, const size_t& filesize, const std::string& fullpath, int32 mapId)
 {
     FORGE_LOG_DEBUG("[Forge]: ProcessScript checking file `%s`", fullpath.c_str());
 
@@ -279,6 +279,7 @@ void ForgeLoader::ProcessScript(lua_State* L, std::string filename, const std::s
     script.filename = filename;
     script.filepath = fullpath;
     script.modulepath = fullpath.substr(0, fullpath.length() - filename.length() - ext.length());
+    script.bytecode.reserve(filesize);
     script.mapId = mapId;
 
     // if compilation fails, we don't add the script 
