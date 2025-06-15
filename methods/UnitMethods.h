@@ -2542,14 +2542,14 @@ namespace LuaUnit
      * @param float value : The value to apply to the stat
      * @param bool apply = true : True applies a positive modifier, false applies a negative
      */
-    int AddFlatStatModifier(Forge* F, Unit* unit)
+    int HandleStatFlatModifier(Forge* F, Unit* unit)
     {
         uint32 statType = F->CHECKVAL<uint32>(2);
         uint8 modType = F->CHECKVAL<uint8>(3);
         float value = F->CHECKVAL<float>(4);
         bool apply = F->CHECKVAL<bool>(5, true);
 
-        unit->HandleStatFlatModifier(UnitMods(UNIT_MOD_STAT_START + statType), (UnitModifierFlatType)modType, value, apply);
+        unit->HandleStatFlatModifier(UnitMods(statType), (UnitModifierFlatType)modType, value, apply);
         return 0;
     }
 
@@ -2565,13 +2565,20 @@ namespace LuaUnit
      * @param [UnitModifierPctType] modType : The type of modifier to apply
      * @param float value : The value to apply to the stat
      */
-    int AddPctStatModifier(Forge* F, Unit* unit)
+    int ApplyStatPctModifier(Forge* F, Unit* unit)
     {
         uint32 statType = F->CHECKVAL<uint32>(2);
         uint8 modType = F->CHECKVAL<uint8>(3);
         float value = F->CHECKVAL<float>(4);
 
-        unit->ApplyStatPctModifier(UnitMods(UNIT_MOD_STAT_START + statType), (UnitModifierPctType)modType, value);
+        unit->ApplyStatPctModifier(UnitMods(statType), (UnitModifierPctType)modType, value);
+        return 0;
+    }
+
+    int UpdateStatBuffMod(Forge* F, Unit* unit)
+    {
+        uint32 statType = F->CHECKVAL<uint32>(2);
+        unit->UpdateStatBuffMod(Stats(statType));
         return 0;
     }
 
@@ -2747,8 +2754,10 @@ namespace LuaUnit
         { "MoveClear", &LuaUnit::MoveClear },
         { "DealDamage", &LuaUnit::DealDamage },
         { "DealHeal", &LuaUnit::DealHeal },
-        { "AddFlatStatModifier", &LuaUnit::AddFlatStatModifier },
-        { "AddPctStatModifier", &LuaUnit::AddPctStatModifier },
+        { "HandleStatFlatModifier", &LuaUnit::HandleStatFlatModifier },
+        { "ApplyStatPctModifier", &LuaUnit::ApplyStatPctModifier },
+        { "UpdateStatBuffMod", &LuaUnit::UpdateStatBuffMod },
+        { "SetImmuneTo", &LuaUnit::SetImmuneTo },
 
         // Not implemented methods
         { "SummonGuardian", METHOD_REG_NONE } // not implemented

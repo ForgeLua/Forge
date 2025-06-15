@@ -29,6 +29,7 @@
 #include "ForgeQueryMethods.h"
 #include "AuraMethods.h"
 #include "ItemMethods.h"
+#include "ItemTemplateMethods.h"
 #include "WorldPacketMethods.h"
 #include "SpellMethods.h"
 #include "QuestMethods.h"
@@ -113,6 +114,9 @@ void RegisterMethods(Forge* F)
 
     ForgeTemplate<ForgeQuery>::Register(F, "ForgeQuery");
     ForgeTemplate<ForgeQuery>::SetMethods(F, LuaQuery::QueryMethods);
+
+    ForgeTemplate<ItemTemplate>::Register(F, "ItemTemplate");
+    ForgeTemplate<ItemTemplate>::SetMethods(F, LuaItemTemplate::ItemTemplateMethods);
 
     ForgeTemplate<long long>::Register(F, "long long");
 

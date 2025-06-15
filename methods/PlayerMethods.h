@@ -3907,6 +3907,88 @@ namespace LuaPlayer
         return 0;
     }
 
+    int ApplyRatingMod(Forge* F, Player* player)
+    {
+        uint32 ratingType = F->CHECKVAL<uint32>(2);
+        float value = F->CHECKVAL<float>(3);
+        bool apply = F->CHECKVAL<bool>(4, true);
+
+        player->ApplyRatingMod(CombatRating(ratingType), value, apply);
+        return 0;
+    }
+
+    int ApplyManaRegenBonus(Forge* F, Player* player)
+    {
+        int32 bonus = F->CHECKVAL<int32>(2);
+        bool apply = F->CHECKVAL<bool>(3, true);
+
+        player->ApplyManaRegenBonus(bonus, apply);
+        return 0;
+    }
+
+    int ApplySpellPowerBonus(Forge* F, Player* player)
+    {
+        int32 bonus = F->CHECKVAL<int32>(2);
+        bool apply = F->CHECKVAL<bool>(3, true);
+
+        player->ApplySpellPowerBonus(bonus, apply);
+        return 0;
+    }
+
+    int ApplyHealthRegenBonus(Forge* F, Player* player)
+    {
+        int32 bonus = F->CHECKVAL<int32>(2);
+        bool apply = F->CHECKVAL<bool>(3, true);
+
+        player->ApplyHealthRegenBonus(bonus, apply);
+        return 0;
+    }
+
+    int ApplySpellPenetrationBonus(Forge* F, Player* player)
+    {
+        int32 bonus = F->CHECKVAL<int32>(2);
+        bool apply = F->CHECKVAL<bool>(3, true);
+
+        player->ApplySpellPenetrationBonus(bonus, apply);
+        return 0;
+    }
+
+    int HandleBaseModFlatValue(Forge* F, Player* player)
+    {
+        uint32 modType = F->CHECKVAL<uint32>(2);
+        float value = F->CHECKVAL<float>(3);
+        bool apply = F->CHECKVAL<bool>(4, true);
+
+        player->HandleBaseModFlatValue(BaseModGroup(modType), value, apply);
+        return 0;
+    }
+
+    int ApplyItemMods(Forge* F, Player* player)
+    {
+        Item* item = F->CHECKOBJ<Item>(2);
+        bool apply = F->CHECKVAL<bool>(3, true);
+
+        if (item)
+            player->_ApplyItemMods(item, item->GetSlot(), apply);
+        return 0;
+    }
+
+    int ApplyItemBonuses(Forge* F, Player* player)
+    {
+        Item* item = F->CHECKOBJ<Item>(2);
+        bool apply = F->CHECKVAL<bool>(3, true);
+
+        if (item)
+            player->_ApplyItemBonuses(item->GetTemplate(), item->GetSlot(), apply);
+        return 0;
+    }
+
+    int RemoveAllItemMods(Forge* F, Player* player)
+    {
+        player->_RemoveAllItemMods();
+        return 0;
+    }
+
     ForgeRegister<Player> PlayerMethods[] =
     {
         // Getters
@@ -4174,6 +4256,15 @@ namespace LuaPlayer
         { "SendCinematicStart", &LuaPlayer::SendCinematicStart },
         { "SendMovieStart", &LuaPlayer::SendMovieStart },
         { "RunCommand", &LuaPlayer::RunCommand },
+        { "ApplyRatingMod", &LuaPlayer::ApplyRatingMod },
+        { "ApplyManaRegenBonus", &LuaPlayer::ApplyManaRegenBonus },
+        { "ApplySpellPowerBonus", &LuaPlayer::ApplySpellPowerBonus },
+        { "ApplyHealthRegenBonus", &LuaPlayer::ApplyHealthRegenBonus },
+        { "ApplySpellPenetrationBonus", &LuaPlayer::ApplySpellPenetrationBonus },
+        { "HandleBaseModFlatValue", &LuaPlayer::HandleBaseModFlatValue },
+        { "ApplyItemMods", &LuaPlayer::ApplyItemMods },
+        { "ApplyItemBonuses", &LuaPlayer::ApplyItemBonuses },
+        { "RemoveAllItemMods", &LuaPlayer::RemoveAllItemMods },
 
         // Not implemented methods
         { "GetHonorStoredKills", METHOD_REG_NONE }, // classic only

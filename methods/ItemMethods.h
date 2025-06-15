@@ -874,6 +874,15 @@ namespace LuaItem
         item->SaveToDB(trans);
         return 0;
     }
+
+    /**
+     * Return the [ItemTemplate]
+     */
+    int GetTemplate(Forge* F, Item* item)
+    {
+        F->Push(item->GetTemplate());
+        return 1;
+    }
     
     ForgeRegister<Item> ItemMethods[] =
     {
@@ -916,6 +925,7 @@ namespace LuaItem
         { "GetArmor", &LuaItem::GetArmor },
         { "GetMaxDurability", &LuaItem::GetMaxDurability },
         { "GetDurability", &LuaItem::GetDurability },
+        { "GetTemplate", &LuaItem::GetTemplate },
 
         // Setters
         { "SetOwner", &LuaItem::SetOwner },
