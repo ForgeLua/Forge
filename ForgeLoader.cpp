@@ -38,7 +38,7 @@ void ForgeUpdateListener::handleFileAction(efsw::WatchID /*watchid*/, std::strin
     std::string ext = path.extension().string();
     std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return std::tolower(c); });
 
-    if (ext != ".lua" && ext != ".ext")
+    if (ext != ".lua" && ext != ".ext" && ext != ".moon")
         return;
 
     sForgeLoader->ReloadForgeForMap(RELOAD_ALL_STATES);
