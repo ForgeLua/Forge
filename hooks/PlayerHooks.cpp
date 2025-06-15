@@ -680,3 +680,36 @@ bool Forge::OnChat(Player* pPlayer, uint32 type, uint32 lang, std::string& msg, 
     CleanUpStack(5);
     return result;
 }
+
+void Forge::OnPlayerItemMove(Player* pPlayer, uint8 sourceBag, uint8 sourceSlot, uint8 destBag, uint8 destSlot, Item* itemSource, Item* itemDest)
+{
+    START_HOOK(PLAYER_EVENT_ON_ITEM_MOVE);
+    HookPush(pPlayer);
+    HookPush(sourceBag);
+    HookPush(sourceSlot);
+    HookPush(destBag);
+    HookPush(destSlot);
+    HookPush(itemSource);
+    HookPush(itemDest);
+    CallAllFunctions(PlayerEventBindings, key);
+}
+
+void Forge::OnPlayerUnEquipItem(Player* pPlayer, Item* pItem, uint8 slot)
+{
+    START_HOOK(PLAYER_EVENT_ON_UNEQUIP_ITEM);
+    HookPush(pPlayer);
+    HookPush(pItem);
+    HookPush(slot);
+    CallAllFunctions(PlayerEventBindings, key);
+}
+
+void Forge::OnPlayerItemBuy(Player* pPlayer, Item* pItem, Creature* vendor, ItemTemplate const* item_template, uint32 count)
+{
+    START_HOOK(PLAYER_EVENT_ON_ITEM_BUY);
+    HookPush(pPlayer);
+    HookPush(pItem);
+    HookPush(vendor);
+    HookPush(item_template);
+    HookPush(count);
+    CallAllFunctions(PlayerEventBindings, key);
+}

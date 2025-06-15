@@ -222,6 +222,9 @@ namespace Hooks
         // UNUSED                               =     52,       // (event, player)
         // UNUSED                               =     53,       // (event, player)
         PLAYER_EVENT_ON_QUEST_STATUS_CHANGED    =     54,       // (event, player, questId, status)
+        PLAYER_EVENT_ON_ITEM_MOVE               =     55,       // (event, player, item, srcBag, srcSlot, destBag, destSlot)
+        PLAYER_EVENT_ON_UNEQUIP_ITEM            =     56,       // (event, player, item, slot)
+        PLAYER_EVENT_ON_ITEM_BUY                =     57,       // (event, player, item, vendor, item_template, count)
 
         PLAYER_EVENT_COUNT
     };

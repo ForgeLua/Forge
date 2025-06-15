@@ -349,6 +349,9 @@ public:
     bool OnTradeAccept(Player* trader, Player* tradee);
     bool OnSendMail(Player* sender, ObjectGuid recipientGuid);
     void OnDiscoverArea(Player* player, uint32 area);
+    void OnPlayerItemMove(Player* pPlayer, uint8 sourceBag, uint8 sourceSlot, uint8 destBag, uint8 destSlot, Item* itemSource, Item* itemDest);
+    void OnPlayerUnEquipItem(Player* pPlayer, Item* pItem, uint8 slot);
+    void OnPlayerItemBuy(Player* pPlayer, Item* pItem, Creature* vendor, ItemTemplate const* item_template, uint32 count);
 
     /* Item */
     void OnDummyEffect(WorldObject* pCaster, uint32 spellId, SpellEffIndex effIndex, Item* pTarget);
