@@ -269,17 +269,6 @@ void Forge::RunScripts()
 
     for (auto it = scripts.begin(); it != scripts.end(); ++it)
     {
-        // if the Forge state is in compatibility mode, it should load all scripts, including those tagged with a specific map ID
-        if (!GetCompatibilityMode())
-        {
-            // check that the script file is either global or meant to be loaded for this map
-            if (it->mapId != -1 && it->mapId != boundMapId)
-            {
-                FORGE_LOG_DEBUG("[Forge]: `%s` is tagged %i and will not load for map: %i", it->filename.c_str(), it->mapId, boundMapId);
-                continue;
-            }
-        }
-
         // Check that no duplicate names exist
         if (loaded.find(it->filename) != loaded.end())
         {
